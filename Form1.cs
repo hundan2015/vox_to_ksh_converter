@@ -243,13 +243,13 @@ namespace vox_to_ksh_converter
                         if (Raw_vox_data[j] != "#END") Spcont_data.Add(Raw_vox_data[j]);
                     }
 
-                }                                    
+                }
             }
             handle = beat_data[0].Split('\t');
             if (handle[0] == "001,01,00")
             {
-                beat_bunmo = Convert.ToInt32(handle[1]);
-                beat_bunja = Convert.ToInt32(handle[2]);
+                beat_bunmo = Convert.ToInt32(handle[2]);
+                beat_bunja = Convert.ToInt32(handle[1]);
             }
             else
             {
@@ -267,22 +267,57 @@ namespace vox_to_ksh_converter
                 return false;
             }
             string[] data_line = new string[10];
-            string data_line_result = "";
+           // data_line = null;
+            string data_line_result = null;
             int longnote_length_a = 0;
             int longnote_length_b = 0;
             int longnote_length_c = 0;
             int longnote_length_d = 0;
+            int longnote_length_fx_l = 0;
+            int longnote_length_fx_r = 0;
+            string last_laser_L_pos = "";
+            int last_laser_L_value = 0;
+            int last_laser_L_length = 0;
+            bool laser_L_slam = false;
+            string last_laser_R_pos = "";
+            int last_laser_R_value = 0;
+            bool laser_L = false;
+            bool laser_R = false;
+            List<string> other_func_data = new List<string>();
             Obj_Data.Add("t="+Convert.ToString(bpm));
             Obj_Data.Add("beat=" + Convert.ToString(beat_bunja)+"/"+ Convert.ToString(beat_bunmo));
+            other_func_data.Clear();
             for (int bar = 1; bar <= end_pos; bar++)
             {
                 Obj_Data.Add("--");
-                for (int beat = 1; beat <= beat_bunmo; beat++)
+                for (int beat = 1; beat <= beat_bunja; beat++)
                 {
-                    for (int tick = 0; tick < 48; tick++)
+                    for (int tick = 0; tick < (192 / beat_bunmo); tick++)
                     {                      
                         string current_pos = String.Format("{0:D3}", bar) + "," + String.Format("{0:D2}", beat) + "," + String.Format("{0:D2}", tick);
-                        for(int a=0; a < Track3_data.Count(); a++)
+                        for (;;)
+                        {
+                            for (int a = 0; a < bpm_data.Count(); a++)
+                            {
+                                handle = bpm_data[a].Split('\t');
+                                if (handle[0] == current_pos)
+                                {
+                                    other_func_data.Add( "t=" + Convert.ToString(handle[1]));
+                                }
+                            }
+                            for (int a = 0; a < beat_data.Count(); a++)
+                            {
+                                handle = beat_data[a].Split('\t');
+                                if (handle[0] == current_pos)
+                                {
+                                    beat_bunmo = Convert.ToInt32(handle[2]);
+                                    beat_bunja = Convert.ToInt32(handle[1]);
+                                    other_func_data.Add( "beat=" + Convert.ToString(beat_bunja) + "/" + Convert.ToString(beat_bunmo));
+                                }
+                            }
+                            break;
+                        }
+                        for (int a=0; a < Track3_data.Count(); a++)
                         {
                             handle = Track3_data[a].Split('\t');
                             if(handle[0] == current_pos)
@@ -294,7 +329,7 @@ namespace vox_to_ksh_converter
                                 else if(Convert.ToInt16(handle[1]) > 0)
                                 {
                                     data_line[0] = "2";
-                                    longnote_length_a = Convert.ToInt16(handle[1]);
+                                    longnote_length_a = Convert.ToInt16(handle[1])-1;
                                 }
                                 break;
                             }
@@ -307,7 +342,7 @@ namespace vox_to_ksh_converter
                             else
                             {
                                 data_line[0] = "0";
-                                break;
+                               // break;
                             }
 
                             
@@ -324,7 +359,7 @@ namespace vox_to_ksh_converter
                                 else if (Convert.ToInt16(handle[1]) > 0)
                                 {
                                     data_line[1] = "2";
-                                    longnote_length_b = Convert.ToInt16(handle[1]);
+                                    longnote_length_b = Convert.ToInt16(handle[1])-1;
                                 }
                                 break;
                             }
@@ -337,7 +372,7 @@ namespace vox_to_ksh_converter
                             else
                             {
                                 data_line[1] = "0";
-                                break;
+                               // break;
                             }
                             
                         }
@@ -353,7 +388,7 @@ namespace vox_to_ksh_converter
                                 else if (Convert.ToInt16(handle[1]) > 0)
                                 {
                                     data_line[2] = "2";
-                                    longnote_length_c = Convert.ToInt16(handle[1]);
+                                    longnote_length_c = Convert.ToInt16(handle[1])-1;
                                 }
                                 break;
                             }
@@ -366,7 +401,7 @@ namespace vox_to_ksh_converter
                             else
                             {
                                 data_line[2] = "0";
-                                break;
+                               // break;
                             }
                             
                         }
@@ -382,35 +417,166 @@ namespace vox_to_ksh_converter
                                 else if (Convert.ToInt16(handle[1]) > 0)
                                 {
                                     data_line[3] = "2";
-                                    longnote_length_d = Convert.ToInt16(handle[1]);
+                                    longnote_length_d = Convert.ToInt16(handle[1])-1;
                                 }
                                 break;
                             }
                             else if (longnote_length_d > 0)
                             {
-                                data_line[3] = "2";
                                 longnote_length_d--;
+                                data_line[3] = "2";
+                                
                                 break;
                             }
                             else
                             {
                                 data_line[3] = "0";
+                               // break;
+                            }                           
+                        }
+                        for (int a = 0; a < Track2_data.Count(); a++)
+                        {
+                            handle = Track2_data[a].Split('\t');
+                            if (handle[0] == current_pos)
+                            {
+                                if (longnote_length_fx_l == 0 && Convert.ToInt16(handle[1]) == 0)
+                                {
+                                    data_line[5] = "2";
+                                }
+                                else if (Convert.ToInt16(handle[1]) > 0)
+                                {
+                                    data_line[5] = "1";
+                                    longnote_length_fx_l = Convert.ToInt16(handle[1]) - 1;
+                                }
                                 break;
                             }
-                            
+                            else if (longnote_length_fx_l > 0)
+                            {
+                                longnote_length_fx_l--;
+                                data_line[5] = "1";
+
+                                break;
+                            }
+                            else
+                            {
+                                data_line[5] = "0";
+                            }
                         }
-                        data_line[4] = "|";
-                        data_line[5] = "0";
-                        data_line[6] = "0";
-                        data_line[7] = "|";
-                        data_line[8] = "-";
-                        data_line[9] = "-";
-                        for (int p = 0; p<10; p++)
+                        for (int a = 0; a < Track7_data.Count(); a++)
                         {
-                            data_line_result += data_line[p];
+                            handle = Track7_data[a].Split('\t');
+                            if (handle[0] == current_pos)
+                            {
+                                if (longnote_length_fx_r == 0 && Convert.ToInt16(handle[1]) == 0)
+                                {
+                                    data_line[6] = "2";
+                                }
+                                else if (Convert.ToInt16(handle[1]) > 0)
+                                {
+                                    data_line[6] = "1";
+                                    longnote_length_fx_r = Convert.ToInt16(handle[1]) - 1;
+                                }
+                                break;
+                            }
+                            else if (longnote_length_fx_r > 0)
+                            {
+                                longnote_length_fx_r--;
+                                data_line[6] = "1";
+
+                                break;
+                            }
+                            else
+                            {
+                                data_line[6] = "0";
+                            }
                         }
-                        Obj_Data.Add(data_line_result);
-                        data_line_result = null;
+                        for(int a = 0; a<Track1_data.Count(); a++)
+                        {
+                            handle = Track1_data[a].Split('\t');
+                            if (handle[0] == current_pos & handle[2] == "1")
+                            {
+                                laser_L = true;
+                                data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
+                                last_laser_L_pos = handle[0];
+                                last_laser_L_value = Convert.ToInt16(handle[1]);
+                                if(handle[5] == "2")
+                                    other_func_data.Add("laserrange_l=2x");
+                                if (a < Track1_data.Count())
+                                {
+                                    string[] handle_1 = Track1_data[a + 1].Split('\t');
+                                    if (handle_1[0] == current_pos)
+                                    {
+                                        laser_L_slam = true;
+                                        last_laser_L_length = 6;
+                                    }
+                                }
+
+                                break;
+                            }
+                            else if (laser_L == true)
+                            {
+                               if (Convert.ToInt16(handle[1]) == last_laser_L_value)
+                                {
+                                    data_line[8] = ":";
+                                }
+                                else
+                                {
+                                    data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
+                                }
+                                if (handle[2] == "2")
+                                {
+                                    last_laser_L_value = 0;
+                                    last_laser_L_pos = null;
+                                    laser_L = false;
+                                }
+                                else
+                                {
+                                    last_laser_L_value = Convert.ToInt16(handle[1]);
+                                    last_laser_L_pos = handle[0];
+                                }
+                                   
+                                break;
+                            }
+                            if (laser_L_slam==true)
+                            {
+                                last_laser_L_length--;
+                                if(last_laser_L_length == 0)
+                                {
+                                    data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
+                                    laser_L_slam = false;
+                                }
+                                else
+                                    data_line[8] = ":";
+                                
+                            }
+                            else
+                            {
+                                data_line[8] = "-";
+                            }
+
+                          
+                        }                       
+                        if (data_line != null)
+                        {
+                            data_line[4] = "|";
+                            data_line[7] = "|";
+                            data_line[9] = "-";
+                            for (int p = 0; p < 10; p++)
+                            {
+                                data_line_result += data_line[p];
+                            }
+                        }
+                        if(other_func_data.Count() > 0)
+                        {
+                            for(int i=0; i< other_func_data.Count(); i++)
+                            Obj_Data.Add(other_func_data[i]);
+                            other_func_data.Clear();
+                        }
+                        if (data_line_result != null)
+                        {
+                            Obj_Data.Add(data_line_result);
+                            data_line_result = null;
+                        }
                         
                     }
                 }
