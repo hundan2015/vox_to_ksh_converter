@@ -275,7 +275,9 @@ namespace vox_to_ksh_converter
             int longnote_length_d = 0;
             int longnote_length_fx_l = 0;
             int longnote_length_fx_r = 0;
+            int current_beat = 0;
             string last_laser_L_pos = "";
+            string last_laser_L_x = "";
             int last_laser_L_value = 0;
             int last_laser_L_length = 0;
             bool laser_L_slam = false;
@@ -292,7 +294,16 @@ namespace vox_to_ksh_converter
                 Obj_Data.Add("--");
                 for (int beat = 1; beat <= beat_bunja; beat++)
                 {
-                    for (int tick = 0; tick < (192 / beat_bunmo); tick++)
+                    /*
+                    for (int tick = 0; tick < (192 / beat_bunmo); tick ++)
+                    {
+                        int max_beat = 0;
+                        for (int a = 0; a < Track1_data.Count(); a++)
+                        {
+
+                        }
+                    }*/
+                    for (int tick = 0; tick < (192 / beat_bunmo); tick=tick+1)
                     {                      
                         string current_pos = String.Format("{0:D3}", bar) + "," + String.Format("{0:D2}", beat) + "," + String.Format("{0:D2}", tick);
                         for (;;)
@@ -344,7 +355,6 @@ namespace vox_to_ksh_converter
                                 data_line[0] = "0";
                                // break;
                             }
-
                             
                         }
                         for (int a = 0; a < Track4_data.Count(); a++)
@@ -490,72 +500,73 @@ namespace vox_to_ksh_converter
                                 data_line[6] = "0";
                             }
                         }
-                        for(int a = 0; a<Track1_data.Count(); a++)
+
+                        for (int a = 0; a < Track1_data.Count(); a++)
                         {
-                            handle = Track1_data[a].Split('\t');
-                            if (handle[0] == current_pos & handle[2] == "1")
+                            handle = Track1_data[a].Split('\t');  
+                            if(laser_L_slam == true)
                             {
-                                laser_L = true;
-                                data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
-                                last_laser_L_pos = handle[0];
-                                last_laser_L_value = Convert.ToInt16(handle[1]);
-                                if(handle[5] == "2")
+                                last_laser_L_length--;
+                                if (last_laser_L_length == 0)
+                                {
+                                    data_line[8] = laser_convert(Convert.ToInt16(last_laser_L_x));                                   
+                                    laser_L_slam = false;
+                                }
+                                else if (last_laser_L_length > 0)
+                                {
+                                    data_line[8] = ":";
+                                }                                   
+                                break;
+                            }
+                            else if (handle[0] == current_pos)
+                            {
+                                last_laser_L_value = a;
+                                if (handle[2] == "1")
+                                {
+                                    data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
+                                    laser_L = true;                                    
+                                }
+                                else if (handle[2] == "0")
+                                {
+                                    data_line[8] = laser_convert(Convert.ToInt16(handle[1]));                                    
+                                }
+                                else if (handle[2] == "2")
+                                {
+                                    data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
+                                    laser_L = false;
+                                }
+                                if (handle[5] == "2")
+                                {
                                     other_func_data.Add("laserrange_l=2x");
-                                if (a < Track1_data.Count())
+                                }
+                                if (a < Track1_data.Count()-1)
                                 {
                                     string[] handle_1 = Track1_data[a + 1].Split('\t');
                                     if (handle_1[0] == current_pos)
                                     {
                                         laser_L_slam = true;
                                         last_laser_L_length = 6;
+                                        last_laser_L_x = handle_1[1];
+                                        if (handle_1[2] == "2")
+                                        {
+                                            laser_L = false;
+                                        }
                                     }
                                 }
-
                                 break;
                             }
-                            else if (laser_L == true)
-                            {
-                               if (Convert.ToInt16(handle[1]) == last_laser_L_value)
-                                {
-                                    data_line[8] = ":";
-                                }
-                                else
-                                {
-                                    data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
-                                }
-                                if (handle[2] == "2")
-                                {
-                                    last_laser_L_value = 0;
-                                    last_laser_L_pos = null;
-                                    laser_L = false;
-                                }
-                                else
-                                {
-                                    last_laser_L_value = Convert.ToInt16(handle[1]);
-                                    last_laser_L_pos = handle[0];
-                                }
-                                   
+                            else if (laser_L == true && last_laser_L_value < a)
+                            {                               
+                                last_laser_L_value = a;
+                                data_line[8] = ":";  
                                 break;
-                            }
-                            if (laser_L_slam==true)
-                            {
-                                last_laser_L_length--;
-                                if(last_laser_L_length == 0)
-                                {
-                                    data_line[8] = laser_convert(Convert.ToInt16(handle[1]));
-                                    laser_L_slam = false;
-                                }
-                                else
-                                    data_line[8] = ":";
-                                
                             }
                             else
                             {
                                 data_line[8] = "-";
                             }
-
-                          
-                        }                       
+                            
+                        }            
                         if (data_line != null)
                         {
                             data_line[4] = "|";
@@ -604,7 +615,7 @@ namespace vox_to_ksh_converter
 
         string laser_convert(int input)
         {
-            double a = (double)input / 2.54;
+            double a = input / 2.54;
             int result = Convert.ToInt32(Math.Round(Math.Round(a * 100) / 100));
             return Convert.ToString(Ksh_Laser[result]);
         }
