@@ -31,6 +31,8 @@ namespace vox_to_ksh_converter
         List<string> peak_effect_data = new List<string>();
         List<string> fx_effect_data = new List<string>();
         List<string> laser_fx_value_data = new List<string>();
+        double cam_sens_top = 150.0;
+        double cam_sens_btm = -150.0;
         int vox_version;
         int end_pos;
         //int beat, bar, tick;
@@ -275,19 +277,29 @@ namespace vox_to_ksh_converter
             int longnote_length_d = 0;
             int longnote_length_fx_l = 0;
             int longnote_length_fx_r = 0;
+            double last_cam_btm_value = 0.0;
+            double last_cam_top_value = 0.0;
+            int cam_btm_length = 0;
+            int cam_top_length = 0;
             int current_beat = 0;
             string last_laser_L_pos = "";
             string last_laser_L_x = "";
+            string last_laser_R_x = "";
             int last_laser_L_value = 0;
             int last_laser_L_length = 0;
+            int last_laser_R_length = 0;
             bool laser_L_slam = false;
+            bool laser_R_slam = false;
             string last_laser_R_pos = "";
             int last_laser_R_value = 0;
             bool laser_L = false;
             bool laser_R = false;
+            bool laser_filter = true;
+            bool cam_top = false;
+            bool cam_btm = false;
             List<string> other_func_data = new List<string>();
-            Obj_Data.Add("t="+Convert.ToString(bpm));
-            Obj_Data.Add("beat=" + Convert.ToString(beat_bunja)+"/"+ Convert.ToString(beat_bunmo));
+            //Obj_Data.Add("t="+Convert.ToString(bpm));
+           // Obj_Data.Add("beat=" + Convert.ToString(beat_bunja)+"/"+ Convert.ToString(beat_bunmo));
             other_func_data.Clear();
             for (int bar = 1; bar <= end_pos; bar++)
             {
@@ -504,6 +516,7 @@ namespace vox_to_ksh_converter
                         for (int a = 0; a < Track1_data.Count(); a++)
                         {
                             handle = Track1_data[a].Split('\t');  
+
                             if(laser_L_slam == true)
                             {
                                 last_laser_L_length--;
@@ -555,23 +568,144 @@ namespace vox_to_ksh_converter
                                 }
                                 break;
                             }
-                            else if (laser_L == true && last_laser_L_value < a)
+                            else if (laser_L == true )
                             {                               
-                                last_laser_L_value = a;
+                               // last_laser_L_value = a;
                                 data_line[8] = ":";  
-                                break;
+                               // break;
                             }
                             else
                             {
                                 data_line[8] = "-";
                             }
                             
-                        }            
-                        if (data_line != null)
+                        }
+                        for (int a = 0; a < Track8_data.Count(); a++)
+                        {
+                            handle = Track8_data[a].Split('\t');
+                            if (laser_R_slam == true)
+                            {
+                                last_laser_R_length--;
+                                if (last_laser_R_length == 0)
+                                {
+                                    data_line[9] = laser_convert(Convert.ToInt16(last_laser_R_x));
+                                    laser_R_slam = false;
+                                }
+                                else if (last_laser_R_length > 0)
+                                {
+                                    data_line[9] = ":";
+                                }
+                                break;
+                            }
+                            else if (handle[0] == current_pos)
+                            {
+                                last_laser_R_value = a;
+                                if (handle[2] == "1")
+                                {
+                                    data_line[9] = laser_convert(Convert.ToInt16(handle[1]));
+                                    laser_R = true;
+                                }
+                                else if (handle[2] == "0")
+                                {
+                                    data_line[9] = laser_convert(Convert.ToInt16(handle[1]));
+                                }
+                                else if (handle[2] == "2")
+                                {
+                                    data_line[9] = laser_convert(Convert.ToInt16(handle[1]));
+                                    laser_R = false;
+                                }
+                                if (handle[5] == "2")
+                                {
+                                    other_func_data.Add("laserrange_r=2x");
+                                }
+                                if (a < Track8_data.Count() - 1)
+                                {
+                                    string[] handle_1 = Track8_data[a + 1].Split('\t');
+                                    if (handle_1[0] == current_pos)
+                                    {
+                                        laser_R_slam = true;
+                                        last_laser_R_length = 6;
+                                        last_laser_R_x = handle_1[1];
+                                        if (handle_1[2] == "2")
+                                        {
+                                            laser_R = false;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            else if (laser_R == true)
+                            {
+                                // last_laser_R_value = a;
+                                data_line[9] = ":";
+                                // break;
+                            }
+                            else
+                            {
+                                data_line[9] = "-";
+                            }
+
+                        }
+                        for (int a = 0; a < Spcont_data.Count(); a++)
+                        {
+                            handle = Spcont_data[a].Split('\t');
+                              if (handle[0] == current_pos && handle[1] == "CAM_RotX")
+                                {
+                                    cam_top = true;
+                                    other_func_data.Add("zoom_top=" + Convert.ToString(Convert.ToDouble(handle[4]) * cam_sens_top));
+                                    last_cam_top_value = Convert.ToDouble(handle[5]) * cam_sens_top;
+                                    cam_top_length = Convert.ToInt32(handle[3]);
+                                    if (cam_top_length == 0)
+                                    {
+                                        cam_top = false;
+                                        other_func_data.Add("zoom_top=" + Convert.ToInt32(Convert.ToDouble(handle[5]) * cam_sens_top));
+                                    }
+                                     break;
+                                }
+                                else if (cam_top_length > 0)
+                                {
+                                    cam_top_length--;
+                                      break;
+                                }
+                                else if (cam_top_length == 0 && cam_top == true)
+                                {
+                                    other_func_data.Add("zoom_top=" + last_cam_top_value);
+                                    cam_top = false;
+                                     break;
+                                }
+                        }
+                        for (int a = 0; a < Spcont_data.Count(); a++)
+                        {
+                            handle = Spcont_data[a].Split('\t');
+                            if (handle[0] == current_pos && handle[1] == "CAM_Radi")
+                            {
+                                cam_btm = true;
+                                other_func_data.Add("zoom_bottom=" + Convert.ToString(Convert.ToDouble(handle[4]) * cam_sens_btm));
+                                last_cam_btm_value = Convert.ToDouble(handle[5]) * cam_sens_btm;
+                                cam_btm_length = Convert.ToInt32(handle[3]);
+                                if (cam_btm_length == 0)
+                                {
+                                    cam_btm = false;
+                                    other_func_data.Add("zoom_bottom=" + Convert.ToInt32(Convert.ToDouble(handle[5]) * cam_sens_btm));
+                                }
+                                break;
+                            }
+                            else if (cam_btm_length > 0)
+                            {
+                                cam_btm_length--;
+                                break;
+                            }
+                            else if (cam_btm_length == 0 && cam_btm == true)
+                            {
+                                other_func_data.Add("zoom_bottom=" + last_cam_btm_value);
+                                cam_btm = false;
+                                break;
+                            }
+                        }
+                        if (data_line != null) 
                         {
                             data_line[4] = "|";
                             data_line[7] = "|";
-                            data_line[9] = "-";
                             for (int p = 0; p < 10; p++)
                             {
                                 data_line_result += data_line[p];
