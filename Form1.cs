@@ -500,7 +500,7 @@ namespace vox_to_ksh_converter
                                 data_line[6] = "0";
                             }
                         }
-
+                        //Laser_L
                         for (int a = 0; a < Track1_data.Count(); a++)
                         {
                             handle = Track1_data[a].Split('\t');  
