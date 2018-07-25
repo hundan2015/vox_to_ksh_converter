@@ -33,6 +33,8 @@ namespace vox_to_ksh_converter
         List<string> laser_fx_value_data = new List<string>();
         double cam_sens_top = 150.0;
         double cam_sens_btm = -150.0;
+        string[] fx_define_data = new string[12];
+        string[] filter_define_data = new string[12];
         int vox_version;
         int end_pos;
         //int beat, bar, tick;
@@ -246,7 +248,18 @@ namespace vox_to_ksh_converter
                     }
 
                 }
+                if (Raw_vox_data[i] == "#TRACK AUTO TAB")
+                {
+                    int j = i;
+                    while (Raw_vox_data[j] != "#END")
+                    {
+                        j++;
+                        if (Raw_vox_data[j] != "#END") autotap_data.Add(Raw_vox_data[j]);
+                    }
+
+                }
             }
+            ksh_file.Close();
             handle = beat_data[0].Split('\t');
             if (handle[0] == "001,01,00")
             {
@@ -262,13 +275,15 @@ namespace vox_to_ksh_converter
             if (handle[0] == "001,01,00")
             {
                 bpm = Convert.ToDouble(handle[1]);
+                Obj_Data.Add("t=" + bpm);
             }
             else
             {
                 error = "bpm parse error";
                 return false;
             }
-            string[] data_line = new string[10];
+            Obj_Data.Add("filtertype=peak");
+            string[] data_line = new string[11];
            // data_line = null;
             string data_line_result = null;
             int longnote_length_a = 0;
@@ -282,6 +297,7 @@ namespace vox_to_ksh_converter
             int cam_btm_length = 0;
             int cam_top_length = 0;
             int current_beat = 0;
+            int zero_tilt_langth = 0;
             string last_laser_L_pos = "";
             string last_laser_L_x = "";
             string last_laser_R_x = "";
@@ -294,38 +310,95 @@ namespace vox_to_ksh_converter
             int last_laser_R_value = 0;
             bool laser_L = false;
             bool laser_R = false;
-            bool laser_filter = true;
+            bool laser_filter = false;
             bool cam_top = false;
             bool cam_btm = false;
+            bool tilt_side = false;
+            bool stop = true;
+            bool autotab_enabled = false;
+            int autotap_length = 0;
+            int stop_length = 0;
+            string last_laser_filter = null;
+            string last_laser_filter_r = null;
+            string last_laser_filter_l = null;
+            string[,] fx_param_data = new string[12,1];
+            string laser_filter_data = null;
             List<string> other_func_data = new List<string>();
             //Obj_Data.Add("t="+Convert.ToString(bpm));
-           // Obj_Data.Add("beat=" + Convert.ToString(beat_bunja)+"/"+ Convert.ToString(beat_bunmo));
+            // Obj_Data.Add("beat=" + Convert.ToString(beat_bunja)+"/"+ Convert.ToString(beat_bunmo));
+            Obj_Data.Add("ver=160");
             other_func_data.Clear();
+            {
+                fx_param_data[0, 0] = fx_effect_data[0];
+                fx_param_data[1, 0] = fx_effect_data[3];
+                fx_param_data[2, 0] = fx_effect_data[6];
+                fx_param_data[3, 0] = fx_effect_data[9];
+                fx_param_data[4, 0] = fx_effect_data[12];
+                fx_param_data[5, 0] = fx_effect_data[15];
+                fx_param_data[6, 0] = fx_effect_data[18];
+                fx_param_data[7, 0] = fx_effect_data[21];
+                fx_param_data[8, 0] = fx_effect_data[24];
+                fx_param_data[9, 0] = fx_effect_data[27];
+                fx_param_data[10, 0] = fx_effect_data[30];
+                fx_param_data[11, 0] = fx_effect_data[33];
+                for(int i=0; i<12; i++)
+                {
+                    if(fx_define_convert(fx_param_data[i, 0]) != null)
+                    {
+                        fx_define_data[i] = "#define_fx " + (i + 2) + "," + fx_define_convert(fx_param_data[i, 0]);
+                        filter_define_data[i] = "#define_filter " + (i + 2) + "," + fx_define_convert(fx_param_data[i, 0]);
+                    }
+                    else
+                    {
+                        fx_define_data[i] = null;
+                        filter_define_data[i] = null;
+                    }
+                    
+                }               
+               
+            }
             for (int bar = 1; bar <= end_pos; bar++)
             {
                 Obj_Data.Add("--");
+                //string current_pos_bar = String.Format("{0:D3}", bar) + ",01,00";
+                //other_func_data.Add("//" + current_pos_bar);
                 for (int beat = 1; beat <= beat_bunja; beat++)
-                {
-                    /*
-                    for (int tick = 0; tick < (192 / beat_bunmo); tick ++)
-                    {
-                        int max_beat = 0;
-                        for (int a = 0; a < Track1_data.Count(); a++)
-                        {
-
-                        }
-                    }*/
+                {                   
                     for (int tick = 0; tick < (192 / beat_bunmo); tick=tick+1)
-                    {                      
+                    {
                         string current_pos = String.Format("{0:D3}", bar) + "," + String.Format("{0:D2}", beat) + "," + String.Format("{0:D2}", tick);
                         for (;;)
                         {
                             for (int a = 0; a < bpm_data.Count(); a++)
                             {
                                 handle = bpm_data[a].Split('\t');
-                                if (handle[0] == current_pos)
+                                if (handle[0] == current_pos && handle[2].Contains("-") == false)
                                 {
                                     other_func_data.Add( "t=" + Convert.ToString(handle[1]));
+                                }
+                                else if (handle[0] == current_pos && handle[2].Contains("-") == true)
+                                {
+                                    string[] handle_a = bpm_data[a + 1].Split('\t');
+                                    stop = true;
+                                    string[] pos = handle[0].Split(',');
+                                    int[] pos_b = new int[3];
+                                    int[] pos_f = new int[3];
+                                    double pos_b_value = 0;
+                                    double pos_f_value = 0;
+                                    for (int i=0; i < 3; i++)
+                                    {
+                                        pos_b[i] = Convert.ToInt32(pos[i]);
+                                    }
+                                    pos = handle_a[0].Split(',');
+                                    for (int i = 0; i < 3; i++)
+                                    {
+                                        pos_f[i] = Convert.ToInt32(pos[i]);
+                                    }
+                                    pos_b_value = (pos_b[0] * (192 * (beat_bunja / beat_bunmo))) + (pos_b[1] * (192 / beat_bunja)) + (pos_b[2]);
+                                    pos_f_value = (pos_f[0] * (192 * (beat_bunja / beat_bunmo))) + (pos_f[1] * (192 / beat_bunja)) + (pos_f[2]);
+                                    stop_length = Convert.ToInt32(pos_f_value) - Convert.ToInt32(pos_b_value);
+                                    Obj_Data.Add("stop=" + stop_length);
+                                    
                                 }
                             }
                             for (int a = 0; a < beat_data.Count(); a++)
@@ -369,7 +442,7 @@ namespace vox_to_ksh_converter
                             }
                             
                         }
-                        for (int a = 0; a < Track4_data.Count(); a++)
+                        for (int a = 0; a < Track4_data.Count(); a++) 
                         {
                             handle = Track4_data[a].Split('\t');
                             if (handle[0] == current_pos)
@@ -467,8 +540,30 @@ namespace vox_to_ksh_converter
                                 }
                                 else if (Convert.ToInt16(handle[1]) > 0)
                                 {
+                                    
                                     data_line[5] = "1";
                                     longnote_length_fx_l = Convert.ToInt16(handle[1]) - 1;
+                                    if (handle[2] != "0")
+                                    {
+                                        if (fx_define_data[Convert.ToInt16(handle[2]) - 2] != null)
+                                        {
+                                            string[] fx = fx_define_data[Convert.ToInt16(handle[2]) - 2].Split(' ');
+                                            string[] fx_param = fx[1].Split(',');
+                                            if (fx_param.Length > 2)
+                                            {
+                                                Obj_Data.Add("fx-l=" + fx[1] + ";" + fx_param[2]);
+                                            }
+                                            else
+                                            {
+                                                Obj_Data.Add("fx-l=" + fx[1]);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Obj_Data.Add("//This(FX_L) effect is not supported.");
+                                        }
+                                    }
+                                    
                                 }
                                 break;
                             }
@@ -497,6 +592,26 @@ namespace vox_to_ksh_converter
                                 {
                                     data_line[6] = "1";
                                     longnote_length_fx_r = Convert.ToInt16(handle[1]) - 1;
+                                    if (handle[2] != "0")
+                                    {
+                                        if (fx_define_data[Convert.ToInt16(handle[2]) - 2] != null)
+                                        {
+                                            string[] fx = fx_define_data[Convert.ToInt16(handle[2]) - 2].Split(' ');
+                                            string[] fx_param = fx[1].Split(',');
+                                            if (fx_param.Length > 2)
+                                            {
+                                                Obj_Data.Add("fx-r=" + fx[1] + ";" + fx_param[2]);
+                                            }
+                                            else
+                                            {
+                                                Obj_Data.Add("fx-r=" + fx[1]);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Obj_Data.Add("//This(FX_R) effect is not supported.");
+                                        }
+                                    }
                                 }
                                 break;
                             }
@@ -510,6 +625,51 @@ namespace vox_to_ksh_converter
                             else
                             {
                                 data_line[6] = "0";
+                            }
+                        }
+                        for (int a = 0; a < autotap_data.Count(); a++)
+                        {
+                            handle = autotap_data[a].Split('\t');
+                            if (handle[0] == current_pos)
+                            {
+                                if(filter_define_data[Convert.ToInt16(handle[2]) - 2]!=null)
+                                {
+                                    string[] filter_fx = filter_define_data[Convert.ToInt16(handle[2]) - 2].Split(' ');
+                                    autotab_enabled = true;
+                                    autotap_length = Convert.ToInt32(handle[1]);
+                                    Obj_Data.Add("filtertype=" + filter_fx[1]);
+                                }
+                                else
+                                {
+                                    Obj_Data.Add("//This fx effect is not supported.");
+                                }
+                                break;
+                            }
+                            else if(autotap_length > 0)
+                            {
+                                autotap_length--;
+                                if(autotap_length == 0)
+                                {
+
+                                    autotab_enabled=false;
+                                    if(last_laser_filter == "0")
+                                    {
+                                        Obj_Data.Add("filtertype=peak");
+                                    }
+                                    else if(last_laser_filter == "2")
+                                    {
+                                        Obj_Data.Add("filtertype=lpf1");
+                                    }
+                                    else if(last_laser_filter == "4")
+                                    {
+                                        Obj_Data.Add("filtertype=hpf1");
+                                    }
+                                    else if(last_laser_filter == "5")
+                                    {
+                                        Obj_Data.Add("filtertype=bitc");
+                                    }
+                                }
+                                break;
                             }
                         }
                         //Laser_L
@@ -552,6 +712,53 @@ namespace vox_to_ksh_converter
                                 {
                                     other_func_data.Add("laserrange_l=2x");
                                 }
+
+                                if (handle[4] != null && autotab_enabled == false)
+                                {
+                                        if (handle[4] == "2")
+                                        {   
+                                            if(last_laser_filter_l != handle[4])
+                                            {
+                                            laser_filter_data = "filtertype=lpf1";
+                                            last_laser_filter_l = handle[4];
+                                            last_laser_filter = handle[4];
+                                            }
+                                           
+                                        }
+                                        else if (handle[4] == "4" )
+                                        {
+                                            if (last_laser_filter_l != handle[4])
+                                            {
+                                            laser_filter_data = "filtertype=hpf1";
+                                            last_laser_filter = handle[4];
+                                            last_laser_filter_l = handle[4];
+                                        }                                        
+                                        }
+                                        else if (handle[4] == "5")
+                                        {
+                                            if (last_laser_filter_l != handle[4])
+                                            {
+                                            laser_filter_data = "filtertype=bitc";
+                                            last_laser_filter = handle[4];
+                                            last_laser_filter_l = handle[4];
+                                        }
+
+                                        }
+                                        else if (handle[4] == "0")
+                                        {
+                                            if (last_laser_filter_l != handle[4])
+                                            {
+                                            laser_filter_data = "filtertype=peak";
+                                            last_laser_filter = handle[4];
+                                            last_laser_filter_l = handle[4];
+                                        }
+
+                                        }
+                                        else if (handle[4] == "6")
+                                        {
+
+                                        }                                                                                                             
+                                }
                                 if (a < Track1_data.Count()-1)
                                 {
                                     string[] handle_1 = Track1_data[a + 1].Split('\t');
@@ -560,9 +767,114 @@ namespace vox_to_ksh_converter
                                         laser_L_slam = true;
                                         last_laser_L_length = 6;
                                         last_laser_L_x = handle_1[1];
+                                        if (handle[3] == "1")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(192";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)192";
+                                            }
+                                        }
+                                        else if (handle[3] == "2")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(48";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)48";
+                                            }
+                                        }
+                                        else if (handle[3] == "3")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(96";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)96";
+                                            }
+                                        }
+                                        else if (handle[3] == "4")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(384";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)384";
+                                            }
+                                        }
+                                        else if (handle[3] == "5")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@<96";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@>96";
+                                            }
+                                        }
+                                        else if (handle[3]=="0")
+                                        {
+                                            data_line[10] = "";
+                                        }
                                         if (handle_1[2] == "2")
                                         {
                                             laser_L = false;
+                                        }
+                                        if (handle_1[4] != null && autotab_enabled == false)
+                                        {
+                                            if (handle_1[4] == "2")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=lpf1";
+                                                    last_laser_filter_l = handle_1[4];
+                                                    last_laser_filter = handle_1[4];
+                                                }
+
+                                            }
+                                            else if (handle_1[4] == "4")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=hpf1";
+                                                    last_laser_filter = handle_1[4];
+                                                    last_laser_filter_l = handle_1[4];
+                                                }
+                                            }
+                                            else if (handle_1[4] == "5")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=bitc";
+                                                    last_laser_filter = handle_1[4];
+                                                    last_laser_filter_l = handle_1[4];
+                                                }
+
+                                            }
+                                            else if (handle_1[4] == "0")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=peak";
+                                                    last_laser_filter = handle_1[4];
+                                                    last_laser_filter_l = handle_1[4];
+                                                }
+
+                                            }
+                                            else if (handle_1[4] == "6")
+                                            {
+
+                                            }
                                         }
                                     }
                                 }
@@ -580,6 +892,7 @@ namespace vox_to_ksh_converter
                             }
                             
                         }
+                        //laser_R
                         for (int a = 0; a < Track8_data.Count(); a++)
                         {
                             handle = Track8_data[a].Split('\t');
@@ -618,17 +931,172 @@ namespace vox_to_ksh_converter
                                 {
                                     other_func_data.Add("laserrange_r=2x");
                                 }
+
+                                if (handle[4] != null && autotab_enabled == false)
+                                {
+                                    if (handle[4] == "2")
+                                    {
+                                        if (last_laser_filter_r != handle[4])
+                                        {
+                                            laser_filter_data = "filtertype=lpf1";
+                                            last_laser_filter = handle[4];
+                                            last_laser_filter_r = handle[4];
+                                        }
+
+                                    }
+                                    else if (handle[4] == "4")
+                                    {
+                                        if (last_laser_filter_r != handle[4])
+                                        {
+                                            laser_filter_data = "filtertype=hpf1";
+                                            last_laser_filter = handle[4];
+                                            last_laser_filter_r = handle[4];
+                                        }
+                                    }
+                                    else if (handle[4] == "5")
+                                    {
+                                        if (last_laser_filter_r != handle[4])
+                                        {
+                                            laser_filter_data = "filtertype=bitc";
+                                            last_laser_filter = handle[4];
+                                            last_laser_filter_r = handle[4];
+                                        }
+
+                                    }
+                                    else if (handle[4] == "0")
+                                    {
+                                        if (last_laser_filter_r != handle[4])
+                                        {
+                                            laser_filter_data = "filtertype=peak";
+                                            last_laser_filter = handle[4];
+                                            last_laser_filter_r = handle[4];
+                                        }
+
+                                    }
+                                    else if (handle[4] == "6")
+                                    {
+
+                                    }
+
+
+                                }
                                 if (a < Track8_data.Count() - 1)
                                 {
                                     string[] handle_1 = Track8_data[a + 1].Split('\t');
                                     if (handle_1[0] == current_pos)
                                     {
+                                        if (handle[3] == "1")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(192";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)192";
+                                            }
+
+                                        }
+                                        else if (handle[3] == "2")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(48";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)48";
+                                            }
+                                        }
+                                        else if (handle[3] == "3")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(96";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)96";
+                                            }
+                                        }
+                                        else if (handle[3] == "4")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@(384";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@)384";
+                                            }
+                                        }
+                                        else if (handle[3] == "5")
+                                        {
+                                            if (Convert.ToInt16(handle[1]) > Convert.ToInt16(handle_1[1]))
+                                            {
+                                                data_line[10] = "@<96";
+                                            }
+                                            else
+                                            {
+                                                data_line[10] = "@>96";
+                                            }
+                                        }
+                                        else if (handle[3] == "0")
+                                        {
+                                            data_line[10] = "";
+                                        }
                                         laser_R_slam = true;
                                         last_laser_R_length = 6;
-                                        last_laser_R_x = handle_1[1];
+                                        last_laser_R_x = handle_1[1];                                        
                                         if (handle_1[2] == "2")
                                         {
                                             laser_R = false;
+                                        }
+                                        if (handle_1[4] != null && autotab_enabled == false)
+                                        {
+                                            if (handle_1[4] == "2")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=lpf1";
+                                                    last_laser_filter_l = handle_1[4];
+                                                    last_laser_filter = handle_1[4];
+                                                }
+
+                                            }
+                                            else if (handle_1[4] == "4")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=hpf1";
+                                                    last_laser_filter = handle_1[4];
+                                                    last_laser_filter_l = handle_1[4];
+                                                }
+                                            }
+                                            else if (handle_1[4] == "5")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=bitc";
+                                                    last_laser_filter = handle_1[4];
+                                                    last_laser_filter_l = handle_1[4];
+                                                }
+
+                                            }
+                                            else if (handle_1[4] == "0")
+                                            {
+                                                if (last_laser_filter_l != handle_1[4])
+                                                {
+                                                    laser_filter_data = "filtertype=peak";
+                                                    last_laser_filter = handle_1[4];
+                                                    last_laser_filter_l = handle_1[4];
+                                                }
+
+                                            }
+                                            else if (handle_1[4] == "6")
+                                            {
+
+                                            }
                                         }
                                     }
                                 }
@@ -649,9 +1117,23 @@ namespace vox_to_ksh_converter
                         for (int a = 0; a < Spcont_data.Count(); a++)
                         {
                             handle = Spcont_data[a].Split('\t');
-                              if (handle[0] == current_pos && handle[1] == "CAM_RotX")
+                            if (handle[0] == current_pos && handle[1] == "CAM_RotX") 
                                 {
                                     cam_top = true;
+                                if (handle[4] == "")
+                                {
+                                    other_func_data.Add("zoom_top=" + Convert.ToString(Convert.ToDouble(handle[4+1]) * cam_sens_top));
+                                    last_cam_top_value = Convert.ToDouble(handle[5+1]) * cam_sens_top;
+                                    cam_top_length = Convert.ToInt32(handle[3]);
+                                    if (cam_top_length == 0)
+                                    {
+                                        cam_top = false;
+                                        other_func_data.Add("zoom_top=" + Convert.ToInt32(Convert.ToDouble(handle[5+1]) * cam_sens_top));
+                                    }
+                                    break;
+                                }
+                                else
+                                {
                                     other_func_data.Add("zoom_top=" + Convert.ToString(Convert.ToDouble(handle[4]) * cam_sens_top));
                                     last_cam_top_value = Convert.ToDouble(handle[5]) * cam_sens_top;
                                     cam_top_length = Convert.ToInt32(handle[3]);
@@ -660,7 +1142,8 @@ namespace vox_to_ksh_converter
                                         cam_top = false;
                                         other_func_data.Add("zoom_top=" + Convert.ToInt32(Convert.ToDouble(handle[5]) * cam_sens_top));
                                     }
-                                     break;
+                                    break;
+                                }
                                 }
                                 else if (cam_top_length > 0)
                                 {
@@ -680,15 +1163,30 @@ namespace vox_to_ksh_converter
                             if (handle[0] == current_pos && handle[1] == "CAM_Radi")
                             {
                                 cam_btm = true;
-                                other_func_data.Add("zoom_bottom=" + Convert.ToString(Convert.ToDouble(handle[4]) * cam_sens_btm));
-                                last_cam_btm_value = Convert.ToDouble(handle[5]) * cam_sens_btm;
-                                cam_btm_length = Convert.ToInt32(handle[3]);
-                                if (cam_btm_length == 0)
+                                if (handle[4] == "")
                                 {
-                                    cam_btm = false;
-                                    other_func_data.Add("zoom_bottom=" + Convert.ToInt32(Convert.ToDouble(handle[5]) * cam_sens_btm));
+                                    other_func_data.Add("zoom_bottom=" + Convert.ToString(Convert.ToDouble(handle[4+1]) * cam_sens_btm));
+                                    last_cam_btm_value = Convert.ToDouble(handle[5+1]) * cam_sens_btm;
+                                    cam_btm_length = Convert.ToInt32(handle[3]);
+                                    if (cam_btm_length == 0)
+                                    {
+                                        cam_btm = false;
+                                        other_func_data.Add("zoom_bottom=" + Convert.ToInt32(Convert.ToDouble(handle[5+1]) * cam_sens_btm));
+                                    }
+                                    break;
                                 }
-                                break;
+                                else
+                                {
+                                    other_func_data.Add("zoom_bottom=" + Convert.ToString(Convert.ToDouble(handle[4]) * cam_sens_btm));
+                                    last_cam_btm_value = Convert.ToDouble(handle[5]) * cam_sens_btm;
+                                    cam_btm_length = Convert.ToInt32(handle[3]);
+                                    if (cam_btm_length == 0)
+                                    {
+                                        cam_btm = false;
+                                        other_func_data.Add("zoom_bottom=" + Convert.ToInt32(Convert.ToDouble(handle[5]) * cam_sens_btm));
+                                    }
+                                    break;
+                                }
                             }
                             else if (cam_btm_length > 0)
                             {
@@ -702,14 +1200,92 @@ namespace vox_to_ksh_converter
                                 break;
                             }
                         }
+                        for (int a = 0; a < Spcont_data.Count(); a++)
+                        {
+                            handle = Spcont_data[a].Split('\t');
+                            if (handle[0] == current_pos && handle[1] == "Tilt")
+                            {
+                                if(handle[4] == "0.00" && handle[5] == "0.00")
+                                {
+                                    zero_tilt_langth = Convert.ToInt32(handle[3]);
+                                    other_func_data.Add("tilt=zero");
+                                }
+                                break;
+                            }
+                            else if(zero_tilt_langth > 0)
+                            {
+                                zero_tilt_langth--;
+                                if (zero_tilt_langth == 0)
+                                {
+                                    other_func_data.Add("tilt=normal");
+                                }
+                                break;
+                            }
+                        }
+                        for (int a = 0; a < tilt_data.Count(); a++)
+                        {
+                            handle = tilt_data[a].Split('\t');
+                            if (handle[0] == current_pos)
+                            {
+                                if (handle[1] == "0")
+                                {
+                                    other_func_data.Add("tilt=normal");
+                                }
+                                else if (handle[1] == "1")
+                                {
+                                    other_func_data.Add("tilt=biggest");
+                                }
+                                else if (handle[1] == "2")
+                                {
+                                    other_func_data.Add("tilt=keep_biggest");
+                                }
+                                break;
+                            }
+                        }
+                        for (int a = 0; a < Spcont_data.Count(); a++)
+                        {
+                            handle = Spcont_data[a].Split('\t');
+                            
+                            string temp = "";
+                            if (handle[0] == current_pos )
+                            {
+                                for(int i=0; i< handle.Count(); i++)
+                                {                                  
+                                    if (handle[i] != "")
+                                    {
+                                       temp += handle[i] + ";";
+                                    }
+                                }
+                                string[] handle_nospace = temp.Split(';');
+                                if (handle_nospace[1]== "SpecialN")
+                                {
+                                    Obj_Data.Add("//" + handle_nospace[4] +  " " +handle_nospace[5]);
+                                }
+                                if(handle_nospace[1] == "HudY")
+                                {
+                                    Obj_Data.Add("//HudUp " + handle_nospace[4] + "->" + handle_nospace[5] + " time:" + handle_nospace[3]);
+                                }
+                                if (handle_nospace[1] == "LaneY")
+                                {
+                                    Obj_Data.Add("//Lane " + handle_nospace[4] + "->" + handle_nospace[5] + " time:" + handle_nospace[3]);
+                                }
+                                break;
+                            }
+                        }
+
                         if (data_line != null) 
                         {
                             data_line[4] = "|";
                             data_line[7] = "|";
-                            for (int p = 0; p < 10; p++)
+                            for (int p = 0; p < 11; p++)
                             {
                                 data_line_result += data_line[p];
                             }
+                        }
+                        if (laser_filter_data != null)
+                        {
+                            other_func_data.Add(laser_filter_data);
+                            laser_filter_data = null;
                         }
                         if(other_func_data.Count() > 0)
                         {
@@ -722,7 +1298,7 @@ namespace vox_to_ksh_converter
                             Obj_Data.Add(data_line_result);
                             data_line_result = null;
                         }
-                        
+                        data_line[10] = "";
                     }
                 }
             }
@@ -742,10 +1318,40 @@ namespace vox_to_ksh_converter
                     {
                         File.WriteLine(Obj_Data[i]);
                     }
+                    for(int i=0; i<fx_define_data.Count(); i++)
+                    {
+                        File.WriteLine(fx_define_data[i]);
+                    }
+                    for(int i=0; i<filter_define_data.Count(); i++)
+                    {
+                        File.WriteLine(filter_define_data[i]);
+                    }
                 }
             }
         }
-            
+        
+        string filter_param_add(string input)
+        {
+            string result="";            
+            string[] handle = input.Split(' ');
+            string[] eff_info = handle[0].Split(',');
+            int effnum = Convert.ToInt32(eff_info[0]);
+            string[] param = laser_fx_value_data[effnum + 2].Split(',');
+            for(int i=0; i< param.Count(); i++)
+            {
+                param[i] = param[i].Replace("\t","");
+            }
+
+            if (param[1] == "0")
+            {
+                return input;
+            }
+            else
+            {
+                
+            }
+            return result;
+        }
 
         string laser_convert(int input)
         {
@@ -757,28 +1363,62 @@ namespace vox_to_ksh_converter
         {
             string input_converted = input.Replace("\t", "");
             string[] vox_fx_info = input_converted.Split(',');
-            string[] fx_type_name = { "Retrigger", "Gate", "Flanger", "TapeStop ", "SideChain", "Wobble", "BitCrusher", "Echo", " PitchShift", "SwitchAudio" };
+            string[] fx_type_name = { "Retrigger", "Gate", "Flanger", "TapeStop", "SideChain", "Wobble", "BitCrusher", "Echo", "PitchShift", "SwitchAudio" };
             string type = "";
             string type_name = "";
             string updateTrigger = "";
             string updatePeriod = "";
             string volume = "";
             string waveLength = "";
+            string delay = "";
+            string depth = "";
             string bit = "";
             string mix = "";
             string speed = "";
             string result = "";
+            string rate = "";
+            string feedbackvol = "";
+            string lowfreq = "";
+            string highfreq = "";
+            string Q = "";
+            string pitch = "";
+            string reduction = "";
             if (vox_fx_info[0] == "1" || vox_fx_info[0] == "8")
             {
                 type = fx_type_name[0];
-                bit = Convert.ToString((4 / Convert.ToDouble(vox_fx_info[3])) * Convert.ToDouble(vox_fx_info[1]));
-                updatePeriod = "1/"+Convert.ToString(4 / Convert.ToDouble(vox_fx_info[3]));
-                waveLength ="1/"+ bit;
-                mix = "0%>"+Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[2]))) + "%";
-                if(vox_fx_info[0] == "8")
-                    result = "RE" + bit + " type=" + type + ";updatePeriod=0" + ";waveLength=" + waveLength + ";mix=" + mix + "updateTrigger=off> on";
+                if(Convert.ToDouble(vox_fx_info[3]) < 0)
+                {
+                    bit =  Convert.ToString(Convert.ToInt32(vox_fx_info[1])*16);
+                    updatePeriod = "1/18";
+                }
                 else
-                    result = "RE" + bit + " type=" + type + ";updatePeriod=" + updatePeriod + ";waveLength=" + waveLength + ";mix=" + mix;
+                {
+                    bit = Convert.ToString((4 / Convert.ToDouble(vox_fx_info[3])) * Convert.ToDouble(vox_fx_info[1]));
+                    updatePeriod = "1/" + Convert.ToString(4 / Convert.ToDouble(vox_fx_info[3]));
+                }                              
+                waveLength ="1/"+ bit;
+                rate = Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[5]) * 100))+"%";
+                mix = "0%>"+Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[2]))) + "%";
+                feedbackvol = Convert.ToString( Convert.ToInt32(Convert.ToDouble(vox_fx_info[4])*100));
+                if(feedbackvol != "100")
+                {
+                    if (vox_fx_info[0] == "8")
+                        result = "Echo," + bit+","+feedbackvol + " type=Echo;updatePeriod=0" + ";waveLength=" + waveLength + ";mix=" + mix  + ";updateTrigger=off>on" + ";feedbackLevel="+feedbackvol+"%";
+                    else
+                        result = "Echo," + bit +","+feedbackvol+ " type=Echo;updatePeriod=" + updatePeriod + ";waveLength=" + waveLength +  ";mix=" + mix + ";updateTrigger=off" + ";feedbackLevel=" + feedbackvol + "%";
+                }
+                else if(Convert.ToDouble(vox_fx_info[3]) < 0)
+                {
+                    result = "RE," + bit + " type=" + type + ";updatePeriod=" + updatePeriod + ";waveLength=" + waveLength + ";rate=" + rate + ";mix=" + mix;
+                }
+                else
+                {
+                    if (vox_fx_info[0] == "8")
+                    result = "RE," + bit + " type=" + type + ";updatePeriod=0" + ";waveLength=" + waveLength + ";mix=" + mix +";rate=" + rate + ";updateTrigger=off>on";
+                    else
+                    result = "RE," + bit + " type=" + type + ";updatePeriod=" + updatePeriod + ";waveLength=" + waveLength + ";rate="+rate + ";mix=" + mix;
+                }
+               
             }
             else if(vox_fx_info[0] == "2")
             {
@@ -786,30 +1426,71 @@ namespace vox_to_ksh_converter
                 bit = Convert.ToString((2 / Convert.ToDouble(vox_fx_info[3])) * Convert.ToDouble(vox_fx_info[2]));
                 waveLength = "1/" + bit;
                 mix = "0%>" + Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[1]))) + "%";
-                result = "GA" + bit + " type=" + type + ";waveLength=" + waveLength;
+                result = "GA," + bit + " type=" + type + ";waveLength=" + waveLength;
             }            
             else if(vox_fx_info[0] == "3")
             {
-
+                type = fx_type_name[2];
+                delay = Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[2]) * 100))+"samples";
+                depth = Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[3]) * 100)) + "samples";
+                volume = Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[1])))+"%";
+                result = "Flan" + " type=" + type + ";delay=" + delay + ";depth=" + depth + ";volume=" + volume;
             }
             else if(vox_fx_info[0] == "4")
             {
                 double speed_1;
                 type = fx_type_name[3];
                 mix = "0%>" + Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[1]))) + "%";
-                speed_1 = (Convert.ToDouble(vox_fx_info[3]) * 10 )/ 6.75;
+                speed_1 = (Convert.ToDouble(vox_fx_info[3]) * (Convert.ToDouble(vox_fx_info[2]) * 9.8125));
                 if (speed_1 > 50)
                     speed = "50";
                 else
-                    speed = Convert.ToString(speed_1) + "%";
-                result = "Tstop" + speed + " type=" + type + ";speed=" + speed + ";mix=" + mix;
+                    speed = Convert.ToString(Convert.ToInt16(speed_1));
+                result = "Tstop," + speed + " type=" + type + ";speed=" + speed +"%"+ ";mix=" + mix;
+            }
+            else if(vox_fx_info[0] == "5")
+            {
+                type = fx_type_name[4];
+                bit = Convert.ToString(Convert.ToInt16(Convert.ToDouble(vox_fx_info[2]) * 2));
+                waveLength = "1/" + bit;
+                result = "Sich," + bit + " type=" + type + ";period=" + waveLength;
+            }
+            else if (vox_fx_info[0] == "6")
+            {
+                type = fx_type_name[5];
+                lowfreq = Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[4])));
+                highfreq = Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[5])));
+                Q = Convert.ToString(Convert.ToDouble(vox_fx_info[7]));
+                waveLength = "1/"+ Convert.ToString(Convert.ToInt16(Convert.ToDouble(vox_fx_info[6])) * 4);
+                bit = Convert.ToString(Convert.ToInt16(Convert.ToDouble(vox_fx_info[6])) * 4);
+                mix = "0%>" + Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[3]))) + "%";
+                result = "Wob," + bit + " type=" + type + ";loFreq=" + lowfreq + "Hz;hiFreq=" + highfreq + "Hz;Q=" + Q + ";waveLength=" + waveLength;
+            }
+            else if (vox_fx_info[0] == "7")
+            {
+                type = fx_type_name[6];
+                reduction = vox_fx_info[2];
+                mix = "0%>" + Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[1]))) + "%";
+                result = "Bitc," + reduction + " type=" + type + ";reduction=" + reduction + "samples" + ";mix=" + mix;
+            }
+            else if (vox_fx_info[0] == "9")
+            {
+                type = fx_type_name[8];
+                pitch = Convert.ToString(Convert.ToInt16(Convert.ToDouble(vox_fx_info[2])));
+                mix = "0%>" + Convert.ToString(Convert.ToInt32(Convert.ToDouble(vox_fx_info[1]))) + "%";
+                result = "Pitc," + pitch + " type=" + type + ";pitch=" + pitch + ";mix=" + mix;
+            }
+            else
+            {
+                result = null;
             }
             return result;
         }
 
         private void chartloadbtn_Click(object sender, EventArgs e)
         {
-            label1.Text = fx_define_convert(textBox1.Text);
+            openFileDialog1.Filter = "Sound Voltex chart files|*.vox|All files (*.*)|*.*";
+            openFileDialog1.Title = "Select a chart file.";
             openFileDialog1.ShowDialog();
         }
 
