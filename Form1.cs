@@ -13,8 +13,10 @@ namespace vox_to_ksh_converter
 {
     public partial class Form1 : Form
     {
-        List<string> Obj_Data = new List<string>();
+        string ksh_filepath = "";
+        List <string> Obj_Data = new List<string>();
         List<string> handle_split = new List<string>();
+        List<string> format_ver = new List<string>();
         List<string> Track1_data = new List<string>();
         List<string> Track2_data = new List<string>();
         List<string> Track3_data = new List<string>();
@@ -76,8 +78,21 @@ namespace vox_to_ksh_converter
             tilt_data.Clear();
             peak_effect_data.Clear();
             fx_effect_data.Clear();
+            format_ver.Clear();
             laser_fx_value_data.Clear();
-
+            Obj_Data.Add("title=" + title_text.Text);
+            Obj_Data.Add("artist=" + artist_text.Text);
+            Obj_Data.Add("effect=" + effecter_text.Text);
+            Obj_Data.Add("illustrator=" + ilust_text.Text);
+            Obj_Data.Add("difficulty=" + difficulty_text.Text);
+            Obj_Data.Add("level=" + level_text.Text);
+            Obj_Data.Add("chokkakuautovol=0");
+            Obj_Data.Add("chokkakuvol=50");
+            Obj_Data.Add("pfiltergain=50");
+            Obj_Data.Add("bg=desert\r\nlayer = arrow");
+            Obj_Data.Add("jacket=.jpg");
+            Obj_Data.Add("m=" + musicpath_text.Text);
+            Obj_Data.Add("mvol=70");
             while ((buffer = ksh_file.ReadLine()) != null)
             {
                 line++;
@@ -258,9 +273,24 @@ namespace vox_to_ksh_converter
                     }
 
                 }
+                if (Raw_vox_data[i] == "#FORMAT VERSION")
+                {
+                    int j = i;
+                    while (Raw_vox_data[j] != "#END")
+                    {
+                        j++;
+                        if (Raw_vox_data[j] != "#END") format_ver.Add(Raw_vox_data[j]);
+                    }
+                }
             }
             ksh_file.Close();
             handle = beat_data[0].Split('\t');
+            vox_version = Convert.ToInt16(format_ver[0]);
+            if(vox_version < 6)
+            {
+                error = "This converter supports vox ver 6 to 10 only.";
+                return false;
+            }
             if (handle[0] == "001,01,00")
             {
                 beat_bunmo = Convert.ToInt32(handle[2]);
@@ -1499,9 +1529,39 @@ namespace vox_to_ksh_converter
             save_ksh();
         }
 
+        private void convert_btn_Click(object sender, EventArgs e)
+        {
+            title_text.Enabled = false;
+            artist_text.Enabled = false;
+            musicpath_text.Enabled = false;
+            ilust_text.Enabled = false;
+            effecter_text.Enabled = false;
+            difficulty_text.Enabled = false;
+            level_text.Enabled = false;          
+            if (load_vox(ksh_filepath) == true)
+            {
+                save_btn.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show(error,"Load error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
+        }
+
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            load_vox(openFileDialog1.FileName);
+            convert_btn.Enabled = true;
+            save_btn.Enabled = false;
+            ksh_filepath = openFileDialog1.FileName;
+            filepathtextbox.Text = ksh_filepath;
+            title_text.Enabled = true;
+            artist_text.Enabled = true;
+            musicpath_text.Enabled = true;
+            ilust_text.Enabled = true;
+            effecter_text.Enabled = true;
+            difficulty_text.Enabled = true;
+            level_text.Enabled = true;
+            title_text.Text = Path.GetFileName(ksh_filepath);            
         }
     }
 }
