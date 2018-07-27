@@ -13,6 +13,7 @@ namespace vox_to_ksh_converter
 {
     public partial class Form1 : Form
     {
+        string sound_filepath = "";
         string ksh_filepath = "";
         List <string> Obj_Data = new List<string>();
         List<string> handle_split = new List<string>();
@@ -89,7 +90,7 @@ namespace vox_to_ksh_converter
             Obj_Data.Add("chokkakuautovol=0");
             Obj_Data.Add("chokkakuvol=50");
             Obj_Data.Add("pfiltergain=50");
-            Obj_Data.Add("bg=desert\r\nlayer = arrow");
+            Obj_Data.Add("bg=desert\r\nlayer=arrow");
             Obj_Data.Add("jacket=.jpg");
             Obj_Data.Add("m=" + musicpath_text.Text);
             Obj_Data.Add("mvol=70");
@@ -284,7 +285,15 @@ namespace vox_to_ksh_converter
                 }
             }
             ksh_file.Close();
-            handle = beat_data[0].Split('\t');
+            try
+            {
+                handle = beat_data[0].Split('\t');
+            }
+            catch(System.ArgumentOutOfRangeException)
+            {
+                error = "No beat information found.";
+                return false;
+            }
             vox_version = Convert.ToInt16(format_ver[0]);
             if(vox_version < 6)
             {
@@ -1537,7 +1546,7 @@ namespace vox_to_ksh_converter
             ilust_text.Enabled = false;
             effecter_text.Enabled = false;
             difficulty_text.Enabled = false;
-            level_text.Enabled = false;          
+            level_text.Enabled = false;  
             if (load_vox(ksh_filepath) == true)
             {
                 save_btn.Enabled = true;
@@ -1548,8 +1557,29 @@ namespace vox_to_ksh_converter
             }
         }
 
+        private void openFileDialog2_FileOk(object sender, CancelEventArgs e)
+        {
+            soundpath.Text = openFileDialog2.FileName;
+            sound_filepath = openFileDialog2.FileName;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            openFileDialog2.Filter = "Bemani sound files|*.2dx|All files (*.*)|*.*";
+            openFileDialog2.Title = "Select a 2dx file.";
+            openFileDialog2.ShowDialog();
+        }
+
+        private void soundpath_TextChanged(object sender, EventArgs e)
+        {
+            //sound_filepath = soundpath.Text;
+            //openFileDialog2.InitialDirectory = soundpath.Text;
+        }
+
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
+            string[] vox_file_name = Path.GetFileNameWithoutExtension(openFileDialog1.FileName).Split('_');
+            openFileDialog2.InitialDirectory = Directory.GetParent(Directory.GetParent(Directory.GetParent(openFileDialog1.FileName).FullName).FullName).FullName + "\\sound";
             convert_btn.Enabled = true;
             save_btn.Enabled = false;
             ksh_filepath = openFileDialog1.FileName;
@@ -1561,7 +1591,41 @@ namespace vox_to_ksh_converter
             effecter_text.Enabled = true;
             difficulty_text.Enabled = true;
             level_text.Enabled = true;
-            title_text.Text = Path.GetFileName(ksh_filepath);            
+            
+            if (vox_file_name.Count() > 1)
+            {
+                title_text.Clear();
+                for (int i=2; i < vox_file_name.Count() - 1; i++)
+                {
+                    title_text.Text += vox_file_name[i];
+                    if(i != vox_file_name.Count()-2)
+                        title_text.Text += "_";
+                }
+                artist_text.Text = vox_file_name[vox_file_name.Count() - 2];
+                if (vox_file_name[vox_file_name.Count() - 1] == "1n")
+                {
+                    difficulty_text.SelectedIndex = 0;
+                }
+                else if (vox_file_name[vox_file_name.Count() - 1] == "2a")
+                {
+                    difficulty_text.SelectedIndex = 1;
+                }
+                else if (vox_file_name[vox_file_name.Count() - 1] == "3e")
+                {
+                    difficulty_text.SelectedIndex = 2;
+                }
+                else if (vox_file_name[vox_file_name.Count() - 1] == "4i" || vox_file_name[vox_file_name.Count() - 1] == "5m")
+                {
+                    difficulty_text.SelectedIndex = 3;
+                }
+                else
+                {
+                    difficulty_text.SelectedIndex = 0;
+                }
+                
+            }
+            
+
         }
     }
 }

@@ -6,3 +6,4 @@ C:\Users\runner38\documents\visual studio 2017\Projects\vox_to_ksh_converter\vox
 C:\Users\runner38\documents\visual studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\vox_to_ksh_converter.csproj.GenerateResource.Cache
 C:\Users\runner38\documents\visual studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\vox_to_ksh_converter.exe
 C:\Users\runner38\documents\visual studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\vox_to_ksh_converter.pdb
+C:\Users\runner38\documents\visual studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\vox_to_ksh_converter.csprojResolveAssemblyReference.cache

@@ -7,3 +7,13 @@ C:\Users\runner38\Documents\Visual Studio 2017\Projects\vox_to_ksh_converter\vox
 C:\Users\runner38\Documents\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.csproj.GenerateResource.Cache
 C:\Users\runner38\Documents\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.exe
 C:\Users\runner38\Documents\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.pdb
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Debug\vox_to_ksh_converter.exe.config
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Debug\vox_to_ksh_converter.exe
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Debug\vox_to_ksh_converter.pdb
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.csprojAssemblyReference.cache
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.Form1.resources
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.Properties.Resources.resources
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.csproj.GenerateResource.cache
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.csproj.CoreCompileInputs.cache
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.exe
+G:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.pdb

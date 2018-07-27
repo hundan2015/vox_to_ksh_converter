@@ -49,11 +49,14 @@
             this.label7 = new System.Windows.Forms.Label();
             this.musicpath_text = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.soundloadbtn = new System.Windows.Forms.Button();
+            this.soundpath = new System.Windows.Forms.TextBox();
+            this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // chartloadbtn
             // 
-            this.chartloadbtn.Location = new System.Drawing.Point(42, 49);
+            this.chartloadbtn.Location = new System.Drawing.Point(42, 34);
             this.chartloadbtn.Name = "chartloadbtn";
             this.chartloadbtn.Size = new System.Drawing.Size(75, 23);
             this.chartloadbtn.TabIndex = 0;
@@ -80,7 +83,7 @@
             // filepathtextbox
             // 
             this.filepathtextbox.Enabled = false;
-            this.filepathtextbox.Location = new System.Drawing.Point(123, 50);
+            this.filepathtextbox.Location = new System.Drawing.Point(123, 35);
             this.filepathtextbox.Name = "filepathtextbox";
             this.filepathtextbox.Size = new System.Drawing.Size(458, 21);
             this.filepathtextbox.TabIndex = 4;
@@ -100,7 +103,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(30, 118);
+            this.label1.Location = new System.Drawing.Point(41, 122);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 12);
             this.label1.TabIndex = 6;
@@ -109,7 +112,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(54, 156);
+            this.label2.Location = new System.Drawing.Point(65, 160);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 12);
             this.label2.TabIndex = 7;
@@ -118,7 +121,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(40, 197);
+            this.label3.Location = new System.Drawing.Point(51, 201);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 12);
             this.label3.TabIndex = 8;
@@ -127,7 +130,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(31, 234);
+            this.label4.Location = new System.Drawing.Point(42, 238);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 12);
             this.label4.TabIndex = 9;
@@ -136,7 +139,7 @@
             // title_text
             // 
             this.title_text.Enabled = false;
-            this.title_text.Location = new System.Drawing.Point(97, 113);
+            this.title_text.Location = new System.Drawing.Point(108, 117);
             this.title_text.Name = "title_text";
             this.title_text.Size = new System.Drawing.Size(217, 21);
             this.title_text.TabIndex = 10;
@@ -144,7 +147,7 @@
             // artist_text
             // 
             this.artist_text.Enabled = false;
-            this.artist_text.Location = new System.Drawing.Point(97, 151);
+            this.artist_text.Location = new System.Drawing.Point(108, 155);
             this.artist_text.Name = "artist_text";
             this.artist_text.Size = new System.Drawing.Size(217, 21);
             this.artist_text.TabIndex = 10;
@@ -152,7 +155,7 @@
             // effecter_text
             // 
             this.effecter_text.Enabled = false;
-            this.effecter_text.Location = new System.Drawing.Point(97, 193);
+            this.effecter_text.Location = new System.Drawing.Point(108, 197);
             this.effecter_text.Name = "effecter_text";
             this.effecter_text.Size = new System.Drawing.Size(217, 21);
             this.effecter_text.TabIndex = 10;
@@ -160,7 +163,7 @@
             // ilust_text
             // 
             this.ilust_text.Enabled = false;
-            this.ilust_text.Location = new System.Drawing.Point(97, 229);
+            this.ilust_text.Location = new System.Drawing.Point(108, 233);
             this.ilust_text.Name = "ilust_text";
             this.ilust_text.Size = new System.Drawing.Size(217, 21);
             this.ilust_text.TabIndex = 10;
@@ -168,7 +171,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(342, 118);
+            this.label5.Location = new System.Drawing.Point(353, 122);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(56, 12);
             this.label5.TabIndex = 11;
@@ -177,7 +180,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(344, 155);
+            this.label6.Location = new System.Drawing.Point(355, 159);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(39, 12);
             this.label6.TabIndex = 12;
@@ -192,7 +195,7 @@
             "challenge",
             "extended",
             "infinete"});
-            this.difficulty_text.Location = new System.Drawing.Point(417, 113);
+            this.difficulty_text.Location = new System.Drawing.Point(428, 117);
             this.difficulty_text.Name = "difficulty_text";
             this.difficulty_text.Size = new System.Drawing.Size(121, 20);
             this.difficulty_text.TabIndex = 13;
@@ -222,7 +225,7 @@
             "18",
             "19",
             "20"});
-            this.level_text.Location = new System.Drawing.Point(417, 151);
+            this.level_text.Location = new System.Drawing.Point(428, 155);
             this.level_text.Name = "level_text";
             this.level_text.Size = new System.Drawing.Size(121, 20);
             this.level_text.TabIndex = 14;
@@ -230,7 +233,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(51, 269);
+            this.label7.Location = new System.Drawing.Point(62, 273);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(44, 12);
             this.label7.TabIndex = 15;
@@ -239,7 +242,7 @@
             // musicpath_text
             // 
             this.musicpath_text.Enabled = false;
-            this.musicpath_text.Location = new System.Drawing.Point(97, 266);
+            this.musicpath_text.Location = new System.Drawing.Point(108, 270);
             this.musicpath_text.Name = "musicpath_text";
             this.musicpath_text.Size = new System.Drawing.Size(217, 21);
             this.musicpath_text.TabIndex = 10;
@@ -254,11 +257,37 @@
             this.label8.Text = "Ver 1.0 (2018-07-25)\r\nSupport vox ver 6~10\r\nLast compiled at 2018-07-25 14:58 (GM" +
     "T+9)\r\nMade by runner38.OOC\r\n";
             // 
+            // soundloadbtn
+            // 
+            this.soundloadbtn.Location = new System.Drawing.Point(42, 66);
+            this.soundloadbtn.Name = "soundloadbtn";
+            this.soundloadbtn.Size = new System.Drawing.Size(75, 23);
+            this.soundloadbtn.TabIndex = 17;
+            this.soundloadbtn.Text = "2dx load";
+            this.soundloadbtn.UseVisualStyleBackColor = true;
+            this.soundloadbtn.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // soundpath
+            // 
+            this.soundpath.Enabled = false;
+            this.soundpath.Location = new System.Drawing.Point(123, 67);
+            this.soundpath.Name = "soundpath";
+            this.soundpath.Size = new System.Drawing.Size(458, 21);
+            this.soundpath.TabIndex = 18;
+            this.soundpath.TextChanged += new System.EventHandler(this.soundpath_TextChanged);
+            // 
+            // openFileDialog2
+            // 
+            this.openFileDialog2.FileName = "openFileDialog2";
+            this.openFileDialog2.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog2_FileOk);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(648, 418);
+            this.Controls.Add(this.soundpath);
+            this.Controls.Add(this.soundloadbtn);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.level_text);
@@ -308,6 +337,9 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox musicpath_text;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button soundloadbtn;
+        private System.Windows.Forms.TextBox soundpath;
+        private System.Windows.Forms.OpenFileDialog openFileDialog2;
     }
 }
 
