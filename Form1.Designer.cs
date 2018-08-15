@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.chartloadbtn = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.save_btn = new System.Windows.Forms.Button();
@@ -48,19 +49,29 @@
             this.level_text = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.musicpath_text = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.soundloadbtn = new System.Windows.Forms.Button();
             this.soundpath = new System.Windows.Forms.TextBox();
             this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
+            this.label9 = new System.Windows.Forms.Label();
+            this.outputfilename_text = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.version = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.date = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.voxver = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.time = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // chartloadbtn
             // 
-            this.chartloadbtn.Location = new System.Drawing.Point(42, 34);
+            resources.ApplyResources(this.chartloadbtn, "chartloadbtn");
             this.chartloadbtn.Name = "chartloadbtn";
-            this.chartloadbtn.Size = new System.Drawing.Size(75, 23);
-            this.chartloadbtn.TabIndex = 0;
-            this.chartloadbtn.Text = "Load";
             this.chartloadbtn.UseVisualStyleBackColor = true;
             this.chartloadbtn.Click += new System.EventHandler(this.chartloadbtn_Click);
             // 
@@ -71,209 +82,133 @@
             // 
             // save_btn
             // 
-            this.save_btn.Enabled = false;
-            this.save_btn.Location = new System.Drawing.Point(538, 362);
+            resources.ApplyResources(this.save_btn, "save_btn");
             this.save_btn.Name = "save_btn";
-            this.save_btn.Size = new System.Drawing.Size(75, 23);
-            this.save_btn.TabIndex = 3;
-            this.save_btn.Text = "save";
             this.save_btn.UseVisualStyleBackColor = true;
             this.save_btn.Click += new System.EventHandler(this.save_btn_Click);
             // 
             // filepathtextbox
             // 
-            this.filepathtextbox.Enabled = false;
-            this.filepathtextbox.Location = new System.Drawing.Point(123, 35);
+            resources.ApplyResources(this.filepathtextbox, "filepathtextbox");
             this.filepathtextbox.Name = "filepathtextbox";
-            this.filepathtextbox.Size = new System.Drawing.Size(458, 21);
-            this.filepathtextbox.TabIndex = 4;
             // 
             // convert_btn
             // 
             this.convert_btn.Cursor = System.Windows.Forms.Cursors.Default;
-            this.convert_btn.Enabled = false;
-            this.convert_btn.Location = new System.Drawing.Point(455, 362);
+            resources.ApplyResources(this.convert_btn, "convert_btn");
             this.convert_btn.Name = "convert_btn";
-            this.convert_btn.Size = new System.Drawing.Size(75, 23);
-            this.convert_btn.TabIndex = 5;
-            this.convert_btn.Text = "Convert";
             this.convert_btn.UseVisualStyleBackColor = true;
             this.convert_btn.Click += new System.EventHandler(this.convert_btn_Click);
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(41, 122);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 12);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Song title:";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(65, 160);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 12);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Artist:";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(51, 201);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 12);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Effecter:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(42, 238);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 12);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Illustrater:";
             // 
             // title_text
             // 
-            this.title_text.Enabled = false;
-            this.title_text.Location = new System.Drawing.Point(108, 117);
+            resources.ApplyResources(this.title_text, "title_text");
             this.title_text.Name = "title_text";
-            this.title_text.Size = new System.Drawing.Size(217, 21);
-            this.title_text.TabIndex = 10;
             // 
             // artist_text
             // 
-            this.artist_text.Enabled = false;
-            this.artist_text.Location = new System.Drawing.Point(108, 155);
+            resources.ApplyResources(this.artist_text, "artist_text");
             this.artist_text.Name = "artist_text";
-            this.artist_text.Size = new System.Drawing.Size(217, 21);
-            this.artist_text.TabIndex = 10;
             // 
             // effecter_text
             // 
-            this.effecter_text.Enabled = false;
-            this.effecter_text.Location = new System.Drawing.Point(108, 197);
+            resources.ApplyResources(this.effecter_text, "effecter_text");
             this.effecter_text.Name = "effecter_text";
-            this.effecter_text.Size = new System.Drawing.Size(217, 21);
-            this.effecter_text.TabIndex = 10;
             // 
             // ilust_text
             // 
-            this.ilust_text.Enabled = false;
-            this.ilust_text.Location = new System.Drawing.Point(108, 233);
+            resources.ApplyResources(this.ilust_text, "ilust_text");
             this.ilust_text.Name = "ilust_text";
-            this.ilust_text.Size = new System.Drawing.Size(217, 21);
-            this.ilust_text.TabIndex = 10;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(353, 122);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(56, 12);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "Difficulty:";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(355, 159);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(39, 12);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "Level:";
             // 
             // difficulty_text
             // 
-            this.difficulty_text.Enabled = false;
+            resources.ApplyResources(this.difficulty_text, "difficulty_text");
             this.difficulty_text.FormattingEnabled = true;
             this.difficulty_text.Items.AddRange(new object[] {
-            "light",
-            "challenge",
-            "extended",
-            "infinete"});
-            this.difficulty_text.Location = new System.Drawing.Point(428, 117);
+            resources.GetString("difficulty_text.Items"),
+            resources.GetString("difficulty_text.Items1"),
+            resources.GetString("difficulty_text.Items2"),
+            resources.GetString("difficulty_text.Items3")});
             this.difficulty_text.Name = "difficulty_text";
-            this.difficulty_text.Size = new System.Drawing.Size(121, 20);
-            this.difficulty_text.TabIndex = 13;
             // 
             // level_text
             // 
-            this.level_text.Enabled = false;
+            resources.ApplyResources(this.level_text, "level_text");
             this.level_text.FormattingEnabled = true;
             this.level_text.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20"});
-            this.level_text.Location = new System.Drawing.Point(428, 155);
+            resources.GetString("level_text.Items"),
+            resources.GetString("level_text.Items1"),
+            resources.GetString("level_text.Items2"),
+            resources.GetString("level_text.Items3"),
+            resources.GetString("level_text.Items4"),
+            resources.GetString("level_text.Items5"),
+            resources.GetString("level_text.Items6"),
+            resources.GetString("level_text.Items7"),
+            resources.GetString("level_text.Items8"),
+            resources.GetString("level_text.Items9"),
+            resources.GetString("level_text.Items10"),
+            resources.GetString("level_text.Items11"),
+            resources.GetString("level_text.Items12"),
+            resources.GetString("level_text.Items13"),
+            resources.GetString("level_text.Items14"),
+            resources.GetString("level_text.Items15"),
+            resources.GetString("level_text.Items16"),
+            resources.GetString("level_text.Items17"),
+            resources.GetString("level_text.Items18"),
+            resources.GetString("level_text.Items19")});
             this.level_text.Name = "level_text";
-            this.level_text.Size = new System.Drawing.Size(121, 20);
-            this.level_text.TabIndex = 14;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(62, 273);
+            resources.ApplyResources(this.label7, "label7");
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(44, 12);
-            this.label7.TabIndex = 15;
-            this.label7.Text = "Music:";
             // 
             // musicpath_text
             // 
-            this.musicpath_text.Enabled = false;
-            this.musicpath_text.Location = new System.Drawing.Point(108, 270);
+            resources.ApplyResources(this.musicpath_text, "musicpath_text");
             this.musicpath_text.Name = "musicpath_text";
-            this.musicpath_text.Size = new System.Drawing.Size(217, 21);
-            this.musicpath_text.TabIndex = 10;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(40, 324);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(249, 48);
-            this.label8.TabIndex = 16;
-            this.label8.Text = "Ver 1.0 (2018-07-25)\r\nSupport vox ver 6~10\r\nLast compiled at 2018-07-25 14:58 (GM" +
-    "T+9)\r\nMade by runner38.OOC\r\n";
             // 
             // soundloadbtn
             // 
-            this.soundloadbtn.Location = new System.Drawing.Point(42, 66);
+            resources.ApplyResources(this.soundloadbtn, "soundloadbtn");
             this.soundloadbtn.Name = "soundloadbtn";
-            this.soundloadbtn.Size = new System.Drawing.Size(75, 23);
-            this.soundloadbtn.TabIndex = 17;
-            this.soundloadbtn.Text = "2dx load";
             this.soundloadbtn.UseVisualStyleBackColor = true;
             this.soundloadbtn.Click += new System.EventHandler(this.button1_Click);
             // 
             // soundpath
             // 
-            this.soundpath.Enabled = false;
-            this.soundpath.Location = new System.Drawing.Point(123, 67);
+            resources.ApplyResources(this.soundpath, "soundpath");
             this.soundpath.Name = "soundpath";
-            this.soundpath.Size = new System.Drawing.Size(458, 21);
-            this.soundpath.TabIndex = 18;
             this.soundpath.TextChanged += new System.EventHandler(this.soundpath_TextChanged);
             // 
             // openFileDialog2
@@ -281,14 +216,96 @@
             this.openFileDialog2.FileName = "openFileDialog2";
             this.openFileDialog2.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog2_FileOk);
             // 
+            // label9
+            // 
+            resources.ApplyResources(this.label9, "label9");
+            this.label9.Name = "label9";
+            // 
+            // outputfilename_text
+            // 
+            resources.ApplyResources(this.outputfilename_text, "outputfilename_text");
+            this.outputfilename_text.Name = "outputfilename_text";
+            // 
+            // label10
+            // 
+            resources.ApplyResources(this.label10, "label10");
+            this.label10.BackColor = System.Drawing.Color.Transparent;
+            this.label10.Name = "label10";
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // version
+            // 
+            resources.ApplyResources(this.version, "version");
+            this.version.Name = "version";
+            // 
+            // label11
+            // 
+            resources.ApplyResources(this.label11, "label11");
+            this.label11.Name = "label11";
+            // 
+            // date
+            // 
+            resources.ApplyResources(this.date, "date");
+            this.date.Name = "date";
+            // 
+            // label13
+            // 
+            resources.ApplyResources(this.label13, "label13");
+            this.label13.Name = "label13";
+            // 
+            // voxver
+            // 
+            resources.ApplyResources(this.voxver, "voxver");
+            this.voxver.Name = "voxver";
+            // 
+            // label15
+            // 
+            resources.ApplyResources(this.label15, "label15");
+            this.label15.Name = "label15";
+            // 
+            // time
+            // 
+            resources.ApplyResources(this.time, "time");
+            this.time.Name = "time";
+            // 
+            // label12
+            // 
+            resources.ApplyResources(this.label12, "label12");
+            this.label12.Name = "label12";
+            // 
+            // label16
+            // 
+            resources.ApplyResources(this.label16, "label16");
+            this.label16.Name = "label16";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.BackColor = System.Drawing.SystemColors.Control;
+            resources.ApplyResources(this.progressBar1, "progressBar1");
+            this.progressBar1.Name = "progressBar1";
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(648, 418);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.time);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.voxver);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.date);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.version);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.outputfilename_text);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.soundpath);
             this.Controls.Add(this.soundloadbtn);
-            this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.level_text);
             this.Controls.Add(this.difficulty_text);
@@ -307,19 +324,22 @@
             this.Controls.Add(this.filepathtextbox);
             this.Controls.Add(this.save_btn);
             this.Controls.Add(this.chartloadbtn);
+            this.Controls.Add(this.progressBar1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "SDVX chart to K-shoot mania chart converter";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button chartloadbtn;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.Button save_btn;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog2;
+        private System.Windows.Forms.Button chartloadbtn;
+        private System.Windows.Forms.Button save_btn;
         private System.Windows.Forms.TextBox filepathtextbox;
         private System.Windows.Forms.Button convert_btn;
         private System.Windows.Forms.Label label1;
@@ -336,10 +356,22 @@
         private System.Windows.Forms.ComboBox level_text;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox musicpath_text;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button soundloadbtn;
         private System.Windows.Forms.TextBox soundpath;
-        private System.Windows.Forms.OpenFileDialog openFileDialog2;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox outputfilename_text;
+        private System.Windows.Forms.Label label10;
+        public System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Label version;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label date;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label voxver;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label time;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
