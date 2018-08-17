@@ -149,7 +149,7 @@
     <value>Konwertować</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 122</value>
+    <value>14, 147</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>88, 12</value>
@@ -158,7 +158,7 @@
     <value>Tytuł piosenki:</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>54, 159</value>
+    <value>54, 184</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 12</value>
@@ -188,22 +188,13 @@
     <value>Poziom:</value>
   </data>
   <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>48, 273</value>
+    <value>51, 298</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
     <value>54, 12</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>Muzyka:</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>251, 48</value>
-  </data>
-  <data name="label8.Text" xml:space="preserve">
-    <value>Ver 1.15 (2018-08-14)
-obsługa wersji vox 6 ~ 10
-Ostatni zestaw: 2018-08-14 06:35 (GMT + 9)
-Wykonane przez runner38.OOC</value>
   </data>
   <data name="soundloadbtn.Font" type="System.Drawing.Font, System.Drawing">
     <value>굴림, 9pt</value>
@@ -227,7 +218,7 @@ Wykonane przez runner38.OOC</value>
     <value>Nazwa pliku wyjściowego(.ksh)</value>
   </data>
   <data name="date.Location" type="System.Drawing.Point, System.Drawing">
-    <value>144, 344</value>
+    <value>143, 369</value>
   </data>
   <data name="label13.Size" type="System.Drawing.Size, System.Drawing">
     <value>116, 12</value>
@@ -235,8 +226,8 @@ Wykonane przez runner38.OOC</value>
   <data name="label13.Text" xml:space="preserve">
     <value>obsługa wersji vox </value>
   </data>
-  <data name="label14.Location" type="System.Drawing.Point, System.Drawing">
-    <value>163, 331</value>
+  <data name="voxver.Location" type="System.Drawing.Point, System.Drawing">
+    <value>164, 356</value>
   </data>
   <data name="label15.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 12</value>
@@ -245,9 +236,9 @@ Wykonane przez runner38.OOC</value>
     <value>Ostatni zestaw:</value>
   </data>
   <data name="time.Location" type="System.Drawing.Point, System.Drawing">
-    <value>209, 344</value>
+    <value>208, 369</value>
   </data>
   <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
-    <value>241, 344</value>
+    <value>240, 369</value>
   </data>
 </root>

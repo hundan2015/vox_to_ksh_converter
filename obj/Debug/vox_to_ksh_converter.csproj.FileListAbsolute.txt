@@ -39,3 +39,6 @@ D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Deb
 D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Debug\de\vox_to_ksh_converter.resources.dll
 D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.Form1.de.resources
 D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\de\vox_to_ksh_converter.resources.dll
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Debug\2dxlib.dll
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Debug\2dxlib.pdb
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Debug\vox_to_ksh_converter.csproj.CopyComplete

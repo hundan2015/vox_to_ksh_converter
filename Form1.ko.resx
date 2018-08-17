@@ -134,7 +134,7 @@
     <value>변환</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>73, 122</value>
+    <value>73, 147</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>33, 12</value>
@@ -143,7 +143,7 @@
     <value>제목:</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>49, 159</value>
+    <value>49, 184</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>57, 12</value>
@@ -152,7 +152,7 @@
     <value>아티스트:</value>
   </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>33, 201</value>
+    <value>33, 226</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>73, 12</value>
@@ -161,7 +161,7 @@
     <value>체보 제작자:</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>49, 236</value>
+    <value>49, 261</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>57, 12</value>
@@ -182,7 +182,7 @@
     <value>레벨:</value>
   </data>
   <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>73, 273</value>
+    <value>73, 298</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
     <value>33, 12</value>
@@ -206,7 +206,7 @@
     <value>출력 파일(.ksh) 이름</value>
   </data>
   <data name="date.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 344</value>
+    <value>53, 369</value>
   </data>
   <data name="label13.Size" type="System.Drawing.Size, System.Drawing">
     <value>105, 12</value>
@@ -215,10 +215,10 @@
     <value>지원되는 vox 버전</value>
   </data>
   <data name="voxver.Location" type="System.Drawing.Point, System.Drawing">
-    <value>154, 331</value>
+    <value>154, 356</value>
   </data>
   <data name="label15.Location" type="System.Drawing.Point, System.Drawing">
-    <value>202, 344</value>
+    <value>202, 369</value>
   </data>
   <data name="label15.Size" type="System.Drawing.Size, System.Drawing">
     <value>133, 12</value>
@@ -227,9 +227,9 @@
     <value>에 마지막으로 컴파일됨</value>
   </data>
   <data name="time.Location" type="System.Drawing.Point, System.Drawing">
-    <value>118, 344</value>
+    <value>118, 369</value>
   </data>
   <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
-    <value>150, 344</value>
+    <value>150, 369</value>
   </data>
 </root>

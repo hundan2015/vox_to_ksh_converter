@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using _2dxlib;
 
 namespace vox_to_ksh_converter
 {
@@ -73,7 +74,7 @@ namespace vox_to_ksh_converter
                 try
                 {
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(args[0]);
-                    MessageBox.Show("Language changed into " + Convert.ToString(Thread.CurrentThread.CurrentUICulture));
+                    //MessageBox.Show("Language changed into " + Convert.ToString(Thread.CurrentThread.CurrentUICulture));
                 }
                 catch (System.Globalization.CultureNotFoundException)
                 {
@@ -311,13 +312,18 @@ namespace vox_to_ksh_converter
             difficulty_text.Enabled = false;
             level_text.Enabled = false;
             backgroundWorker1.RunWorkerAsync(ksh_filepath);
+            
 
         }
 
         private void openFileDialog2_FileOk(object sender, CancelEventArgs e)
         {
+            
             soundpath.Text = openFileDialog2.FileName;
             sound_filepath = openFileDialog2.FileName;
+            _2dxload(sound_filepath);
+            
+            //MessageBox.Show(Convert.ToString(dxlib.vaild2dx(sound_filepath)[0]));
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -329,8 +335,18 @@ namespace vox_to_ksh_converter
 
         private void soundpath_TextChanged(object sender, EventArgs e)
         {
-            //sound_filepath = soundpath.Text;
             //openFileDialog2.InitialDirectory = soundpath.Text;
+            sound_filepath = soundpath.Text;
+            if (soundpath.Text != "")
+            {
+                if(_2dxload(sound_filepath) == false)
+                {
+                    soundpath.Text = "";
+                }
+                
+            }
+            
+            
         }
         
         private void Form1_Load(object sender, EventArgs e)
@@ -1754,7 +1770,17 @@ namespace vox_to_ksh_converter
             string[] vox_file_name = Path.GetFileNameWithoutExtension(openFileDialog1.FileName).Split('_');
             outputfilename_text.Text = Path.GetFileNameWithoutExtension(openFileDialog1.FileName) + ".ksh";
             //if(Directory.GetParent(Directory.GetParent(Directory.GetParent(openFileDialog1.FileName).FullName).FullName).FullName != null)
-                //openFileDialog2.InitialDirectory = Directory.GetParent(Directory.GetParent(Directory.GetParent(openFileDialog1.FileName).FullName).FullName).FullName + "\\sound";
+            try
+            {
+                openFileDialog2.InitialDirectory = Directory.GetParent(Directory.GetParent(Directory.GetParent(openFileDialog1.FileName).FullName).FullName).FullName + "\\sound";
+                soundpath.Text = Directory.GetParent(Directory.GetParent(Directory.GetParent(openFileDialog1.FileName).FullName).FullName).FullName + "\\sound\\" + Path.GetFileNameWithoutExtension(openFileDialog1.FileName).Substring(0, Path.GetFileNameWithoutExtension(openFileDialog1.FileName).Length - 3) + ".2dx";
+            }
+            catch
+            {
+                openFileDialog2.InitialDirectory = Directory.GetParent(openFileDialog1.FileName).FullName;
+                soundpath.Text = "";
+                dx_info.Text = "2dx autoload failed.";
+            }
             convert_btn.Enabled = true;
             save_btn.Enabled = false;
             ksh_filepath = openFileDialog1.FileName;
@@ -1801,6 +1827,29 @@ namespace vox_to_ksh_converter
             }
             
 
+        }
+        public bool _2dxload(string path)
+        {
+          
+            object[] dxinfo = dxlib.vaild2dx(path);
+            if (Convert.ToString(dxinfo[0]) == "true")
+            {
+                dx_info.Text = "2dx loaded, HeaderSize:  " + Convert.ToString(dxinfo[2]) + "byte, Included wav files: " + Convert.ToString(dxinfo[3]) + ", Name in header: " + Convert.ToString(dxinfo[1]);
+                return true;
+            }
+            else if(Convert.ToString(dxinfo[0]) == "false")
+            {
+                dx_info.Text = "2dx autoload failed ";
+                return false;
+               // MessageBox.Show(path + " is not a vaild 2dx file.","2dx load error",MessageBoxButtons.OK, MessageBoxIcon.Error );
+            }
+            else
+            {
+                dx_info.Text = "2dx autoload failed .";
+                MessageBox.Show(dxinfo[0].ToString(),"2dx Load Failed");
+                return false;
+            }
+            
         }
     }
 }

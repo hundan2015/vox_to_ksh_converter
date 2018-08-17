@@ -66,6 +66,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.dx_info = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // chartloadbtn
@@ -78,6 +79,7 @@
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            resources.ApplyResources(this.openFileDialog1, "openFileDialog1");
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
             // save_btn
@@ -87,15 +89,20 @@
             this.save_btn.UseVisualStyleBackColor = true;
             this.save_btn.Click += new System.EventHandler(this.save_btn_Click);
             // 
+            // folderBrowserDialog1
+            // 
+            resources.ApplyResources(this.folderBrowserDialog1, "folderBrowserDialog1");
+            // 
             // filepathtextbox
             // 
             resources.ApplyResources(this.filepathtextbox, "filepathtextbox");
             this.filepathtextbox.Name = "filepathtextbox";
+            this.filepathtextbox.ReadOnly = true;
             // 
             // convert_btn
             // 
-            this.convert_btn.Cursor = System.Windows.Forms.Cursors.Default;
             resources.ApplyResources(this.convert_btn, "convert_btn");
+            this.convert_btn.Cursor = System.Windows.Forms.Cursors.Default;
             this.convert_btn.Name = "convert_btn";
             this.convert_btn.UseVisualStyleBackColor = true;
             this.convert_btn.Click += new System.EventHandler(this.convert_btn_Click);
@@ -209,11 +216,13 @@
             // 
             resources.ApplyResources(this.soundpath, "soundpath");
             this.soundpath.Name = "soundpath";
+            this.soundpath.ReadOnly = true;
             this.soundpath.TextChanged += new System.EventHandler(this.soundpath_TextChanged);
             // 
             // openFileDialog2
             // 
             this.openFileDialog2.FileName = "openFileDialog2";
+            resources.ApplyResources(this.openFileDialog2, "openFileDialog2");
             this.openFileDialog2.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog2_FileOk);
             // 
             // label9
@@ -284,9 +293,14 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.BackColor = System.Drawing.SystemColors.Control;
             resources.ApplyResources(this.progressBar1, "progressBar1");
+            this.progressBar1.BackColor = System.Drawing.SystemColors.Control;
             this.progressBar1.Name = "progressBar1";
+            // 
+            // dx_info
+            // 
+            resources.ApplyResources(this.dx_info, "dx_info");
+            this.dx_info.Name = "dx_info";
             // 
             // Form1
             // 
@@ -325,6 +339,7 @@
             this.Controls.Add(this.save_btn);
             this.Controls.Add(this.chartloadbtn);
             this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.dx_info);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -372,6 +387,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label dx_info;
     }
 }
 

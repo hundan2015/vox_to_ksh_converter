@@ -146,7 +146,7 @@
     <value>Song Titel:</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>51, 159</value>
+    <value>51, 184</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>55, 12</value>
@@ -164,13 +164,16 @@
     <value>Illustrator:</value>
   </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>344, 122</value>
+    <value>338, 145</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 12</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>Schwierigkeit:</value>
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>374, 183</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 12</value>
@@ -194,7 +197,7 @@
     <value>Name der Ausgabedatei (.ksh)</value>
   </data>
   <data name="date.Location" type="System.Drawing.Point, System.Drawing">
-    <value>174, 344</value>
+    <value>175, 369</value>
   </data>
   <data name="label13.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 12</value>
@@ -203,7 +206,7 @@
     <value>Unterstütze vox ver</value>
   </data>
   <data name="voxver.Location" type="System.Drawing.Point, System.Drawing">
-    <value>165, 330</value>
+    <value>164, 356</value>
   </data>
   <data name="label15.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 12</value>
@@ -212,10 +215,10 @@
     <value>Zuletzt kompiliert um</value>
   </data>
   <data name="time.Location" type="System.Drawing.Point, System.Drawing">
-    <value>239, 344</value>
+    <value>240, 369</value>
   </data>
   <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
-    <value>271, 344</value>
+    <value>272, 369</value>
   </data>
   <data name="label16.Size" type="System.Drawing.Size, System.Drawing">
     <value>171, 12</value>
