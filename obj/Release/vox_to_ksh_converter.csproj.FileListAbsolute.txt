@@ -29,3 +29,9 @@ D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Rel
 D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Release\de\vox_to_ksh_converter.resources.dll
 D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\vox_to_ksh_converter.Form1.de.resources
 D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\de\vox_to_ksh_converter.resources.dll
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Release\zh\vox_to_ksh_converter.resources.dll
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Release\2dxlib.dll
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\bin\Release\2dxlib.pdb
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\vox_to_ksh_converter.Form1.zh.resources
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\zh\vox_to_ksh_converter.resources.dll
+D:\Visual Studio 2017\Projects\vox_to_ksh_converter\vox_to_ksh_converter\obj\Release\vox_to_ksh_converter.csproj.CopyComplete

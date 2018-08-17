@@ -79,7 +79,6 @@
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            resources.ApplyResources(this.openFileDialog1, "openFileDialog1");
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
             // save_btn
@@ -89,10 +88,6 @@
             this.save_btn.UseVisualStyleBackColor = true;
             this.save_btn.Click += new System.EventHandler(this.save_btn_Click);
             // 
-            // folderBrowserDialog1
-            // 
-            resources.ApplyResources(this.folderBrowserDialog1, "folderBrowserDialog1");
-            // 
             // filepathtextbox
             // 
             resources.ApplyResources(this.filepathtextbox, "filepathtextbox");
@@ -101,8 +96,8 @@
             // 
             // convert_btn
             // 
-            resources.ApplyResources(this.convert_btn, "convert_btn");
             this.convert_btn.Cursor = System.Windows.Forms.Cursors.Default;
+            resources.ApplyResources(this.convert_btn, "convert_btn");
             this.convert_btn.Name = "convert_btn";
             this.convert_btn.UseVisualStyleBackColor = true;
             this.convert_btn.Click += new System.EventHandler(this.convert_btn_Click);
@@ -222,7 +217,6 @@
             // openFileDialog2
             // 
             this.openFileDialog2.FileName = "openFileDialog2";
-            resources.ApplyResources(this.openFileDialog2, "openFileDialog2");
             this.openFileDialog2.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog2_FileOk);
             // 
             // label9
@@ -270,6 +264,7 @@
             // 
             resources.ApplyResources(this.voxver, "voxver");
             this.voxver.Name = "voxver";
+            this.voxver.Click += new System.EventHandler(this.voxver_Click);
             // 
             // label15
             // 
@@ -293,8 +288,8 @@
             // 
             // progressBar1
             // 
-            resources.ApplyResources(this.progressBar1, "progressBar1");
             this.progressBar1.BackColor = System.Drawing.SystemColors.Control;
+            resources.ApplyResources(this.progressBar1, "progressBar1");
             this.progressBar1.Name = "progressBar1";
             // 
             // dx_info

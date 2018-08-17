@@ -17,10 +17,12 @@ namespace vox_to_ksh_converter
 {
     public partial class Form1 : Form
     {
-        string ver_last = "1.16";
-        string date_last = "2018-08-15";
+        int dxfilecount;
+        string savedir = "";
+        string ver_last = "1.20";
+        string date_last = "2018-08-17";
         string supportvoxver = "6~10";
-        string time_last = "09:01";
+        string time_last = "13:21";
         bool loadok = false;
         string last_filter_name = "";
         string sound_filepath = "";
@@ -47,8 +49,8 @@ namespace vox_to_ksh_converter
         List<string> laser_fx_value_data = new List<string>();
         double cam_sens_top = 150.0;
         double cam_sens_btm = -150.0;
-        string[] fx_define_data = new string[12];
-        string[] filter_define_data = new string[12];
+        List<string> fx_define_data = new List<string>();
+        List<string> filter_define_data = new List<string>();
         int vox_version;
         int end_pos;
         //int beat, bar, tick;
@@ -97,6 +99,7 @@ namespace vox_to_ksh_converter
             {
                 // System.IO.File.WriteAllText(Application.StartupPath)
                 string FilePath = "";
+                
                 if (outputfilename_text.Text == "")
                 {
                     FilePath = folderBrowserDialog1.SelectedPath + "\\result.ksh";
@@ -105,7 +108,12 @@ namespace vox_to_ksh_converter
                 {
                     FilePath = folderBrowserDialog1.SelectedPath + "\\" + outputfilename_text.Text;
                 }
-                using (StreamWriter File = new StreamWriter(@FilePath))
+                savedir = folderBrowserDialog1.SelectedPath + "\\" + Path.GetFileNameWithoutExtension(FilePath).Substring(0, Path.GetFileNameWithoutExtension(FilePath).Length - 3);
+                DirectoryInfo di = new DirectoryInfo(savedir);
+                if (di.Exists != true)
+                    di.Create();
+                
+                using (StreamWriter File = new StreamWriter(savedir + "\\" + Path.GetFileName(FilePath)))
                 {
                     for(int i = 0; i < Obj_Data.Count(); i++)
                     {
@@ -119,6 +127,10 @@ namespace vox_to_ksh_converter
                     {
                         File.WriteLine(filter_define_data[i]);
                     }
+                }
+                if (soundpath.Text != "")
+                {
+                    dxlib.dxextract(soundpath.Text, savedir);
                 }
             }
         }
@@ -367,6 +379,7 @@ namespace vox_to_ksh_converter
             {
                 {                  
                     bool lasermute = false;
+                    bool anotherfx = false;
                     int line = 0;
                     string buffer;
                     string[] handle;
@@ -386,6 +399,8 @@ namespace vox_to_ksh_converter
                     Spcont_data.Clear();
                     bpm_data.Clear();
                     beat_data.Clear();
+                    fx_define_data.Clear();
+                    filter_define_data.Clear();
                     autotap_data.Clear();
                     tilt_data.Clear();
                     peak_effect_data.Clear();
@@ -695,13 +710,13 @@ namespace vox_to_ksh_converter
                         {
                             if (fx_define_convert(fx_param_data[i, 0]) != null)
                             {
-                                fx_define_data[i] = "#define_fx " + (i + 2) + "," + fx_define_convert(fx_param_data[i, 0]);
-                                filter_define_data[i] = "#define_filter " + (i + 2) + "," + fx_define_convert(fx_param_data[i, 0]);
+                                fx_define_data.Add( "#define_fx " + (i + 2) + "," + fx_define_convert(fx_param_data[i, 0]));
+                                filter_define_data.Add( "#define_filter " + (i + 2) + "," + fx_define_convert(fx_param_data[i, 0]));
                             }
                             else
                             {
-                                fx_define_data[i] = null;
-                                filter_define_data[i] = null;
+                                fx_define_data.Add(null);
+                                filter_define_data.Add(null);
                             }
 
                         }
@@ -907,9 +922,11 @@ namespace vox_to_ksh_converter
                                             longnote_length_fx_l = Convert.ToInt16(handle[1]) - 1;
                                             if (handle[2] != "0")
                                             {
-                                                if (Convert.ToInt16(handle[2]) > 13)
+                                                if (Convert.ToInt16(handle[2]) == 254)
                                                 {
-                                                    Obj_Data.Add("//This(FX_L) effect is another sound file.");
+                                                    anotherfx = true;
+                                                    Obj_Data.Add("fx-l=fx");
+                                                    //Obj_Data.Add("//This(FX_L) effect is another sound file.");
                                                 }
                                                 else if (fx_define_data[Convert.ToInt16(handle[2]) - 2] != null)
                                                 {
@@ -964,9 +981,11 @@ namespace vox_to_ksh_converter
                                             longnote_length_fx_r = Convert.ToInt16(handle[1]) - 1;
                                             if (handle[2] != "0")
                                             {
-                                                if (Convert.ToInt16(handle[2]) > 13)
+                                                if (Convert.ToInt16(handle[2]) == 254)
                                                 {
-                                                    Obj_Data.Add("//This(FX_R) effect is another sound file.");
+                                                    anotherfx = true;
+                                                    Obj_Data.Add("fx-r=fx");
+                                                    //Obj_Data.Add("//This(FX_R) effect is another sound file.");
                                                 }
                                                 else if (fx_define_data[Convert.ToInt16(handle[2]) - 2] != null)
                                                 {
@@ -1456,9 +1475,12 @@ namespace vox_to_ksh_converter
                                     handle = autotap_data[a].Split('\t');
                                     if (handle[0] == current_pos)
                                     {
-                                        if (Convert.ToInt16(handle[2]) > 13)
+                                        if (Convert.ToInt16(handle[2]) == 254)
                                         {
-                                            Obj_Data.Add("//This FX effect is another sound file.");
+                                            anotherfx = true;
+                                            Obj_Data.Add("filtertype=fx");
+                                            lasermute = true;
+                                            //Obj_Data.Add("//This FX effect is another sound file.");
                                         }
                                         else if (filter_define_data[Convert.ToInt16(handle[2]) - 2] != null)
                                         {
@@ -1703,7 +1725,7 @@ namespace vox_to_ksh_converter
                                         break;
                                     }
                                 }
-
+                               
                                 if (data_line != null)
                                 {
                                     data_line[4] = "|";
@@ -1733,7 +1755,13 @@ namespace vox_to_ksh_converter
                             }
 
                         }
+                        
                         //Task.Delay(1000);
+                    }
+                    if (anotherfx == true)
+                    {
+                        filter_define_data.Add("#define_filter fx type=SwitchAudio;fileName=1.wav");
+                        fx_define_data.Add("#define_fx fx type=SwitchAudio;fileName=1.wav");
                     }
                     Obj_Data.Add("--");
                     return true;
@@ -1828,13 +1856,34 @@ namespace vox_to_ksh_converter
             
 
         }
+
+        private void voxver_Click(object sender, EventArgs e)
+        {
+
+        }
+
         public bool _2dxload(string path)
         {
           
             object[] dxinfo = dxlib.vaild2dx(path);
+            
+
             if (Convert.ToString(dxinfo[0]) == "true")
             {
                 dx_info.Text = "2dx loaded, HeaderSize:  " + Convert.ToString(dxinfo[2]) + "byte, Included wav files: " + Convert.ToString(dxinfo[3]) + ", Name in header: " + Convert.ToString(dxinfo[1]);
+               dxfilecount = Convert.ToInt32(dxinfo[3]);
+                if(dxfilecount == 1)
+                {
+                    musicpath_text.Text = "0.wav";
+                }
+                else if(dxfilecount == 2)
+                {
+                    musicpath_text.Text = "0.wav";
+                }
+                else
+                {
+                    musicpath_text.Text = "0.wav";
+                }
                 return true;
             }
             else if(Convert.ToString(dxinfo[0]) == "false")
